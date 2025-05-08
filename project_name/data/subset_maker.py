@@ -2,7 +2,7 @@ import os
 import random
 
 
-def get_all_data_pathnames():
+def get_all_data_pathnames() -> list[list[str]]:
     file_directory = __file__
     data_directory = os.path.join(os.path.split(file_directory)[0],
                                   "full_data")
@@ -31,6 +31,15 @@ def get_all_data_pathnames():
 
     return all_datapoint_folder_pathnames
 
+
+def get_train_data_folders() -> list[str]:
+    file_directory = __file__
+    data_directory = os.path.join(os.path.split(file_directory)[0],
+                                  "subset_data")
+
+    return os.listdir(data_directory)
+
+
 def subset_full_dataset(amount_samples: int):
     all_datapoints_folder_pathnames = get_all_data_pathnames()
 
@@ -42,6 +51,7 @@ def subset_full_dataset(amount_samples: int):
         main_folder in all_datapoints_folder_pathnames]
 
     # TODO test normality.
+
 
 def main():
     test_dataset_normality
