@@ -1,6 +1,11 @@
 import os
 import random
 import shutil
+from data_test import test_dataset_normality
+
+file_endings = {"rgb": ".png",
+                "depth": "_depth.npy",
+                "depth_mask": "_depth_mask.npy"}
 
 
 def get_all_data_pathnames() -> list[list[str]]:
@@ -16,7 +21,7 @@ def get_all_data_pathnames() -> list[list[str]]:
                                                        folder))
 
     for main_folder in datapoint_directories_main:
-        datapoint_directories = [main_folder]
+        datapoint_directories: list[str] = [main_folder]
         for _ in range(3):
             new_datapoint_directories = []
 
@@ -24,14 +29,17 @@ def get_all_data_pathnames() -> list[list[str]]:
                 sub_folders = os.listdir(path)
 
                 for folder in sub_folders:
-                    # TODO get rid of file extension and type description.
                     new_datapoint_directories.append(os.path.join(path,
                                                                   folder))
 
             # get rid of all duplicates
-            datapoint_directories = list(set(new_datapoint_directories))
+            datapoint_directories = new_datapoint_directories
+        # get rid of file extension and type description.
+        for ending in file_endings.values():
+            datapoint_directories = [_.removesuffix(ending)
+                                     for _ in datapoint_directories]
 
-        all_datapoint_folder_pathnames.append(datapoint_directories)
+        all_datapoint_folder_pathnames.append(list(set(datapoint_directories)))
 
     return all_datapoint_folder_pathnames
 
@@ -45,6 +53,7 @@ def get_train_data_folders() -> list[str]:
 
 
 def subset_full_dataset(amount_samples: int):
+    # list all file endings.
     file_directory = __file__
     data_directory = os.path.join(os.path.split(file_directory)[0],
                                   "subset_data")
@@ -63,9 +72,11 @@ def subset_full_dataset(amount_samples: int):
         flatten_selected_data += foldered_data
 
     # TODO test normality.
+    for folder in selected_data:
+        test_dataset_normality(folder)
 
-    # TODO list all file endings.
-    file_endings = []
+    test_dataset_normality(flatten_selected_data)
+
     # copy over the subsetted data in their own folders.
     for index, data in enumerate(flatten_selected_data):
         data_point_folder = os.path.join(data_directory, str(index))
@@ -76,12 +87,12 @@ def subset_full_dataset(amount_samples: int):
             os.rmdir(data_point_folder)
             os.mkdir(data_point_folder)
 
-        for endings in file_endings:
-            shutil.copy(os.path.join(data, endings), data_point_folder)
+        for endings in file_endings.values():
+            shutil.copy(data + endings, data_point_folder)
 
 
 def main():
-    pass
+    subset_full_dataset(200)
 
 
 if __name__ == '__main__':
