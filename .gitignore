@@ -5,3 +5,4 @@ __pycache__/
 venv/
 .env
 project_name/data/full_data/
+project_name/data/subset_data/

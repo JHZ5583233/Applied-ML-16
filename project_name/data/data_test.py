@@ -5,6 +5,11 @@ file_end = "_depth.npy"
 
 
 def test_dataset_normality(data: list[str]) -> None:
+    """
+    plots the histogram of given depth maps.
+
+    data: list of path names to the data point name
+    """
     whole_data = np.array([])
     max_n = 0
 
@@ -15,11 +20,3 @@ def test_dataset_normality(data: list[str]) -> None:
 
     plt.hist(whole_data)
     plt.show()
-
-
-def main():
-    test_dataset_normality()
-
-
-if __name__ == '__main__':
-    main()

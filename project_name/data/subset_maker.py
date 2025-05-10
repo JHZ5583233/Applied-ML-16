@@ -9,6 +9,9 @@ file_endings = {"rgb": ".png",
 
 
 def get_all_data_pathnames() -> list[list[str]]:
+    """
+    get all path names of the data points name in the full data folder
+    """
     file_directory = __file__
     data_directory = os.path.join(os.path.split(file_directory)[0],
                                   "full_data")
@@ -45,6 +48,9 @@ def get_all_data_pathnames() -> list[list[str]]:
 
 
 def get_train_data_folders() -> list[str]:
+    """
+    get all the folder names in the subset data folder
+    """
     file_directory = __file__
     data_directory = os.path.join(os.path.split(file_directory)[0],
                                   "subset_data")
@@ -53,6 +59,9 @@ def get_train_data_folders() -> list[str]:
 
 
 def subset_full_dataset(amount_samples: int):
+    """
+    This will sample n amount of samples from the datapoints in ful_data
+    """
     # list all file endings.
     file_directory = __file__
     data_directory = os.path.join(os.path.split(file_directory)[0],
@@ -91,7 +100,10 @@ def subset_full_dataset(amount_samples: int):
             shutil.copy(data + endings, data_point_folder)
 
 
-def main():
+def main() -> None:
+    """
+    This main to to run the data subset maker on it's own
+    """
     subset_full_dataset(200)
 
 
