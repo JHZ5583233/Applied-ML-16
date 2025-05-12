@@ -30,8 +30,7 @@ jobs:
       - name: Configure Flake8
         run: |
           echo "[flake8]" > .flake8
-          echo "extend-ignore = E402" >> .flake8
-          echo "extend-ignore = W504" >> .flake8
+          echo "extend-ignore = E402,W504" >> .flake8
           echo "exclude = .github,autoop/tests" >> .flake8
           # exclude A101, A102, D100 and everything that starts with D2 and D4
           echo "ignore = ANN101,ANN102,D100,D2,D4,ANN002,ANN003" >> .flake8
