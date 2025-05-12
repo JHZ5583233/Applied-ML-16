@@ -1,6 +1,7 @@
 import os
 import random
 import shutil
+import threading
 from data_test import test_dataset_normality
 from path_grapper import get_all_data_pathnames
 
@@ -32,10 +33,20 @@ def subset_full_dataset(amount_samples: int):
         flatten_selected_data += foldered_data
 
     # test normality.
+    threads: list[threading.Thread] = []
     for folder in selected_data:
-        test_dataset_normality(folder)
+        threads.append(threading.Thread(target=test_dataset_normality,
+                                        args=(folder, "sub data",)))
 
-    test_dataset_normality(flatten_selected_data)
+    threads.append(threading.Thread(target=test_dataset_normality,
+                                    args=(flatten_selected_data,
+                                          "whole data",)))
+
+    for thread in threads:
+        thread.start()
+
+    for thread in threads:
+        thread.join()
 
     # copy over the subsetted data in their own folders.
     for index, data in enumerate(flatten_selected_data):
