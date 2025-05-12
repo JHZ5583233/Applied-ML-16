@@ -39,7 +39,8 @@ def subset_full_dataset(amount_samples: int) -> None:
 
     print("running normality tests")
     # test normality.
-    if virtual_memory().total > 16000000000:
+    if virtual_memory().total > float("inf"):
+        # TODO fix bug where matplot lib has to be on the main thread
         threads: list[threading.Thread] = []
         for folder in selected_data:
             threads.append(threading.Thread(target=test_dataset_normality,
@@ -79,7 +80,7 @@ def main() -> None:
     """
     This main to to run the data subset maker on it's own
     """
-    subset_full_dataset(200)
+    subset_full_dataset(500)
 
 
 if __name__ == '__main__':
