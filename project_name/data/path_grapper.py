@@ -66,7 +66,12 @@ def get_train_data_folders() -> list[str]:
     data_directory = os.path.join(os.path.split(file_directory)[0],
                                   "subset_data")
 
-    return os.listdir(data_directory)
+    train_data_folders = []
+
+    for folder in os.listdir(data_directory):
+        train_data_folders.append(os.path.join(data_directory, folder))
+
+    return train_data_folders
 
 
 def main() -> None:
