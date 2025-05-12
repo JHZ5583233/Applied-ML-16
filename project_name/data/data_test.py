@@ -22,6 +22,6 @@ def test_dataset_normality(data: list[str], name: str) -> None:
     plt.hist(whole_data)
     plt.xlabel("Depth")
     plt.ylabel("Frequency")
-    plt.title(f"{name} | norm: stat{normality.statistic}," +
-              "p:{normality.pvalue}")
+    plt.title(f"{name} | norm: stat:{normality.statistic:0.2f}, " +
+              f"p:{normality.pvalue:0.2f}")
     plt.show()
