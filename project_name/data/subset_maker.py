@@ -2,6 +2,7 @@ import os
 import random
 import shutil
 import threading
+from psutil import virtual_memory
 from data_test import test_dataset_normality
 from path_grapper import get_all_data_pathnames
 
@@ -19,35 +20,47 @@ def subset_full_dataset(amount_samples: int):
     data_directory = os.path.join(os.path.split(file_directory)[0],
                                   "subset_data")
 
+    print("getting data points")
     all_datapoints_folder_pathnames = get_all_data_pathnames()
 
     amount_differnt_main_folder = len(all_datapoints_folder_pathnames)
     sample_per_main_folder = amount_samples // amount_differnt_main_folder
 
+    print("sampling data points")
     selected_data: list[list[str]] = [
         random.sample(main_folder, sample_per_main_folder) for
         main_folder in all_datapoints_folder_pathnames]
+
+    print("flattening data points")
     flatten_selected_data = []
 
     for foldered_data in selected_data:
         flatten_selected_data += foldered_data
 
+    print("running normality tests")
     # test normality.
-    threads: list[threading.Thread] = []
-    for folder in selected_data:
+    if virtual_memory().total > 16000000000:
+        threads: list[threading.Thread] = []
+        for folder in selected_data:
+            threads.append(threading.Thread(target=test_dataset_normality,
+                                            args=(folder, "sub folder",)))
+
         threads.append(threading.Thread(target=test_dataset_normality,
-                                        args=(folder, "sub data",)))
+                                        args=(flatten_selected_data,
+                                              "whole data",)))
 
-    threads.append(threading.Thread(target=test_dataset_normality,
-                                    args=(flatten_selected_data,
-                                          "whole data",)))
+        for thread in threads:
+            thread.start()
 
-    for thread in threads:
-        thread.start()
+        for thread in threads:
+            thread.join()
+    else:
+        for folder in selected_data:
+            test_dataset_normality(folder, "sub folder")
 
-    for thread in threads:
-        thread.join()
+        test_dataset_normality(flatten_selected_data, "whole selected data")
 
+    print("copying over data to subset data")
     # copy over the subsetted data in their own folders.
     for index, data in enumerate(flatten_selected_data):
         data_point_folder = os.path.join(data_directory, str(index))
