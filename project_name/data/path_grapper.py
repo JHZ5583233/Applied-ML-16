@@ -1,8 +1,27 @@
 import os
+import threading
 
-file_endings = {"rgb": ".png",
-                "depth": "_depth.npy",
-                "depth_mask": "_depth_mask.npy"}
+path_multithread_output: list[list[str]] = []
+
+
+def grab_data_from_folder(main_folder: str):
+    datapoint_directories: list[str] = [main_folder]
+    for _ in range(3):
+        new_datapoint_directories = []
+        for path in datapoint_directories:
+            sub_folders = os.listdir(path)
+            for folder in sub_folders:
+                new_datapoint_directories.append(os.path.join(path, folder))
+
+        # get rid of all duplicates
+        datapoint_directories = new_datapoint_directories
+
+    # get rid of file extension and type description.
+    for ending in [".png", "_depth.npy", "_depth_mask.npy"]:
+        datapoint_directories = [_.removesuffix(ending)
+                                 for _ in datapoint_directories]
+
+    path_multithread_output.append(datapoint_directories)
 
 
 def get_all_data_pathnames() -> list[list[str]]:
@@ -14,32 +33,24 @@ def get_all_data_pathnames() -> list[list[str]]:
                                   "full_data")
 
     datapoint_directories_main = []
-    all_datapoint_folder_pathnames = []
 
     for folder in os.listdir(data_directory):
         datapoint_directories_main.append(os.path.join(data_directory,
                                                        folder))
 
+    threads: list[threading.Thread] = []
     for main_folder in datapoint_directories_main:
-        datapoint_directories: list[str] = [main_folder]
-        for _ in range(3):
-            new_datapoint_directories = []
+        threads.append(threading.Thread(target=grab_data_from_folder,
+                                        args=(main_folder, )))
 
-            for path in datapoint_directories:
-                sub_folders = os.listdir(path)
+    for thread in threads:
+        thread.start()
 
-                for folder in sub_folders:
-                    new_datapoint_directories.append(os.path.join(path,
-                                                                  folder))
+    for thread in threads:
+        thread.join()
 
-            # get rid of all duplicates
-            datapoint_directories = new_datapoint_directories
-        # get rid of file extension and type description.
-        for ending in file_endings.values():
-            datapoint_directories = [_.removesuffix(ending)
-                                     for _ in datapoint_directories]
-
-        all_datapoint_folder_pathnames.append(list(set(datapoint_directories)))
+    all_datapoint_folder_pathnames = path_multithread_output.copy()
+    path_multithread_output.clear()
 
     return all_datapoint_folder_pathnames
 
@@ -53,3 +64,11 @@ def get_train_data_folders() -> list[str]:
                                   "subset_data")
 
     return os.listdir(data_directory)
+
+
+def main():
+    print(get_all_data_pathnames())
+
+
+if __name__ == '__main__':
+    main()
