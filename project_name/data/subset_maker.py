@@ -11,7 +11,7 @@ file_endings = {"rgb": ".png",
                 "depth_mask": "_depth_mask.npy"}
 
 
-def subset_full_dataset(amount_samples: int):
+def subset_full_dataset(amount_samples: int) -> None:
     """
     This will sample n amount of samples from the datapoints in ful_data
     """

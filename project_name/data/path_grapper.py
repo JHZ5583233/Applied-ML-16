@@ -4,7 +4,10 @@ import threading
 path_multithread_output: list[list[str]] = []
 
 
-def grab_data_from_folder(main_folder: str):
+def grab_data_from_folder(main_folder: str) -> None:
+    """
+    Grap data from the given folder.
+    """
     datapoint_directories: list[str] = [main_folder]
     for _ in range(3):
         new_datapoint_directories = []
@@ -66,7 +69,10 @@ def get_train_data_folders() -> list[str]:
     return os.listdir(data_directory)
 
 
-def main():
+def main() -> None:
+    """
+    To run stand allone functions
+    """
     print(get_all_data_pathnames())
 
 
