@@ -4,6 +4,7 @@ from scipy.stats import normaltest
 
 
 multithread_data_test_output: list[tuple[str, ndarray]] = []
+# TODO change to counter object?
 
 
 def test_dataset_normality(data: list[str], name: str) -> None:
