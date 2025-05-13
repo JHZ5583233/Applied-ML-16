@@ -2319,3 +2319,4 @@ project_name/data/val/outdoor/scene_00024/scan_00202/00024_00202_outdoor_330_040
 project_name/data/val/outdoor/scene_00024/scan_00202/00024_00202_outdoor_340_030_depth_mask.npy
 project_name/data/val/outdoor/scene_00024/scan_00202/00024_00202_outdoor_340_030_depth.npy
 project_name/data/val/outdoor/scene_00024/scan_00202/00024_00202_outdoor_340_030.png
+.vscode/settings.json
