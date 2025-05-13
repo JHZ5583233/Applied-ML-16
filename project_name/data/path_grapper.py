@@ -27,7 +27,7 @@ def grab_data_from_folder(main_folder: str) -> None:
     path_multithread_output.append(datapoint_directories)
 
 
-def get_all_data_pathnames() -> list[list[str]]:
+def get_all_data_path_names() -> list[list[str]]:
     """
     get all path names of the data points name in the full data folder
     """
@@ -78,7 +78,7 @@ def main() -> None:
     """
     To run stand allone functions
     """
-    print(get_all_data_pathnames())
+    print(get_all_data_path_names())
 
 
 if __name__ == '__main__':
