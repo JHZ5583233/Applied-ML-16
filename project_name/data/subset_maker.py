@@ -5,6 +5,7 @@ import threading
 import matplotlib.pyplot as plt
 from scipy.stats import normaltest
 from psutil import virtual_memory
+from shutil import rmtree
 from data_test import test_dataset_normality, threaded_make_data_array, multithread_data_test_output
 from path_grapper import get_all_data_path_names
 
@@ -74,8 +75,9 @@ def subset_full_dataset(amount_samples: int, full_data_folder: str) -> None:
         os.mkdir(output_data_directory)
         print(f"made data folder {full_data_folder + '_subset'}")
     except FileExistsError:
-        os.rmdir(output_data_directory)
+        rmtree(output_data_directory)
         os.mkdir(output_data_directory)
+
     # copy over the subset data in their own folders.
     for index, data_path in enumerate(flatten_selected_data):
         data_point_folder = os.path.join(output_data_directory, str(index))
@@ -83,7 +85,7 @@ def subset_full_dataset(amount_samples: int, full_data_folder: str) -> None:
             os.mkdir(data_point_folder)
             print(f"made data point {index}")
         except FileExistsError:
-            os.rmdir(data_point_folder)
+            rmtree(data_point_folder)
             os.mkdir(data_point_folder)
 
         for endings in [".png", "_depth.npy", "_depth_mask.npy"]:
