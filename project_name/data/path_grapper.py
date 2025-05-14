@@ -78,7 +78,7 @@ def main() -> None:
     """
     To run stand allone functions
     """
-    print(get_all_data_path_names())
+    print(get_all_data_path_names("train"))
 
 
 if __name__ == '__main__':
