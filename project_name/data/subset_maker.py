@@ -9,24 +9,22 @@ from data_test import test_dataset_normality, threaded_make_data_array, multithr
 from path_grapper import get_all_data_path_names
 
 
-def subset_full_dataset(amount_samples: int) -> None:
+def subset_full_dataset(amount_samples: int, full_data_folder: str) -> None:
     """
     This will sample n amount of samples from the data points in ful_data
     """
     # list all file endings.
     file_directory = __file__
     data_directory = os.path.join(os.path.split(file_directory)[0],
-                                  "subset_data")
+                                  full_data_folder)
 
     print("getting data points")
-    all_data_points_folder_path_names = get_all_data_path_names()
-
-    amount_full_data = (len(all_data_points_folder_path_names[0]) +
-                        len(all_data_points_folder_path_names[1]))
+    all_data_points_folder_path_names = get_all_data_path_names(full_data_folder)
 
     print("sampling data points")
+    amount_sample_per_data_folder = amount_samples // len(all_data_points_folder_path_names)
     selected_data: list[list[str]] = [
-        random.sample(main_folder, int(amount_samples * (len(main_folder)/amount_full_data))) for
+        random.sample(main_folder, amount_sample_per_data_folder) for
         main_folder in all_data_points_folder_path_names]
 
     print("flattening data points")
@@ -71,9 +69,16 @@ def subset_full_dataset(amount_samples: int) -> None:
         test_dataset_normality(flatten_selected_data, "whole selected data")
 
     print("copying over data to subset data")
+    output_data_directory = data_directory + "_subset"
+    try:
+        os.mkdir(output_data_directory)
+        print(f"made data folder {full_data_folder + '_subset'}")
+    except FileExistsError:
+        os.rmdir(output_data_directory)
+        os.mkdir(output_data_directory)
     # copy over the subset data in their own folders.
     for index, data_path in enumerate(flatten_selected_data):
-        data_point_folder = os.path.join(data_directory, str(index))
+        data_point_folder = os.path.join(output_data_directory, str(index))
         try:
             os.mkdir(data_point_folder)
             print(f"made data point {index}")
@@ -89,7 +94,7 @@ def main() -> None:
     """
     This main to to run the data subset maker on it's own
     """
-    subset_full_dataset(1000)
+    subset_full_dataset(10, "train")
 
 
 if __name__ == '__main__':
