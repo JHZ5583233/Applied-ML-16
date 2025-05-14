@@ -6,7 +6,9 @@ import matplotlib.pyplot as plt
 from scipy.stats import normaltest
 from psutil import virtual_memory
 from shutil import rmtree
-from data_test import test_dataset_normality, threaded_make_data_array, multithread_data_test_output
+from data_test import (test_dataset_normality,
+                       threaded_make_data_array,
+                       multithread_data_test_output)
 from path_grapper import get_all_data_path_names
 
 
@@ -20,10 +22,12 @@ def subset_full_dataset(amount_samples: int, full_data_folder: str) -> None:
                                   full_data_folder)
 
     print("getting data points")
-    all_data_points_folder_path_names = get_all_data_path_names(full_data_folder)
+    all_data_points_folder_path_names = get_all_data_path_names(
+        full_data_folder)
 
     print("sampling data points")
-    amount_sample_per_data_folder = amount_samples // len(all_data_points_folder_path_names)
+    amount_sample_per_data_folder = (amount_samples //
+                                     len(all_data_points_folder_path_names))
     selected_data: list[list[str]] = [
         random.sample(main_folder, amount_sample_per_data_folder) for
         main_folder in all_data_points_folder_path_names]
