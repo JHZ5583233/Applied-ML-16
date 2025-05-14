@@ -27,13 +27,13 @@ def grab_data_from_folder(main_folder: str) -> None:
     path_multithread_output.append(datapoint_directories)
 
 
-def get_all_data_path_names() -> list[list[str]]:
+def get_all_data_path_names(data_folder: str) -> list[list[str]]:
     """
     get all path names of the data points name in the full data folder
     """
     file_directory = __file__
     data_directory = os.path.join(os.path.split(file_directory)[0],
-                                  "full_data")
+                                  data_folder)
 
     datapoint_directories_main = []
 

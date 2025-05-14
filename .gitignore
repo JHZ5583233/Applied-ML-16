@@ -8,3 +8,6 @@ venv/
 project_name/data/full_data/
 project_name/data/subset_data/
 project_name/data/val/
+project_name/data/train/
+project_name/data/train_subset/
+project_name/data/__pycache__/
