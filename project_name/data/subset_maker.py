@@ -100,7 +100,7 @@ def main() -> None:
     """
     This main to to run the data subset maker on it's own
     """
-    subset_full_dataset(10, "train")
+    subset_full_dataset(10, "val")
 
 
 if __name__ == '__main__':

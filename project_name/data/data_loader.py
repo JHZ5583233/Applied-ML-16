@@ -16,7 +16,8 @@ class DataLoader:
                                       self.folder)
         self.file_endings = [".png", "_depth.npy"]
 
-        self.data_paths = os.listdir(data_directory)
+        self.data_paths = [os.path.join(data_directory, _) for _ in
+                           os.listdir(data_directory)]
 
         self.data_index = 0
 
@@ -34,7 +35,8 @@ class DataLoader:
         current_data_path = self.data_paths[self.data_index]
         self.increment_index()
 
-        data = os.listdir(current_data_path)
+        data = [os.path.join(current_data_path, _) for _ in
+                os.listdir(current_data_path)]
 
         return_list: list[np.ndarray] = []
         for file in data:
@@ -48,4 +50,16 @@ class DataLoader:
                 depth_data = np.load(file)
                 return_list.append(depth_data)
 
-        return tuple(return_list)
+        return return_list
+
+
+def main():
+    data_load = DataLoader("val")
+
+    data = data_load.get_data()
+
+    print([_.shape for _ in data])
+
+
+if __name__ == '__main__':
+    main()
