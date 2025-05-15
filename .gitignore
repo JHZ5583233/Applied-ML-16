@@ -11,3 +11,4 @@ project_name/data/val/
 project_name/data/train/
 project_name/data/train_subset/
 project_name/data/__pycache__/
+/zoedepth/
