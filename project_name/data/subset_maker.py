@@ -79,6 +79,7 @@ def subset_full_dataset(amount_samples: int, full_data_folder: str) -> None:
         os.mkdir(output_data_directory)
         print(f"made data folder {full_data_folder + '_subset'}")
     except FileExistsError:
+        # carfull will delete any path given
         rmtree(output_data_directory)
         os.mkdir(output_data_directory)
 
@@ -89,6 +90,7 @@ def subset_full_dataset(amount_samples: int, full_data_folder: str) -> None:
             os.mkdir(data_point_folder)
             print(f"made data point {index}")
         except FileExistsError:
+            # carfull will delete any path given
             rmtree(data_point_folder)
             os.mkdir(data_point_folder)
 
