@@ -5,7 +5,10 @@ from typing import Literal
 
 
 class DataLoader:
-    def __init__(self, folder: Literal["train", "Val"]):
+    """
+    Data loader class for loading data from the subsetted data.
+    """
+    def __init__(self, folder: Literal["train", "Val"]) -> None:
         """
         initialise the data loader to get data from subsettes train or val
         dataset.
@@ -53,7 +56,10 @@ class DataLoader:
         return return_list
 
 
-def main():
+def main() -> None:
+    """
+    simple test and run data loader class
+    """
     data_load = DataLoader("val")
 
     data = data_load.get_data()
