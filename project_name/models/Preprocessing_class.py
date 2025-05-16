@@ -1,0 +1,140 @@
+import numpy as np
+from PIL import Image
+import matplotlib.pyplot as plt
+
+
+class Preprocessing:
+    def __init__(self, tile_size=(256, 256)):
+        self.tile_size = tile_size
+        self.last_padding_info = {}
+
+    def is_8_bit(self, np_array):
+        return np_array.dtype == np.uint8
+
+    def normalize(self, np_array):
+        """Normalize array to [0, 1] float32"""
+        if self.is_8_bit(np_array):
+            return np_array.astype(np.float32) / 255.0
+        if np.issubdtype(np_array.dtype, np.floating):
+            return np_array.astype(np.float32)
+        return (np_array / np.iinfo(np_array.dtype).max).astype(np.float32)
+
+    def tile_with_padding(self, np_arrays, pad_mode='constant'):
+        """Process single or multiple arrays"""
+        if not isinstance(np_arrays, (list, tuple)):
+            np_arrays = [np_arrays]
+
+        all_tiles = []
+        for idx, np_array in enumerate(np_arrays):
+            # Validate input before normalization
+            if not isinstance(np_array, np.ndarray):
+                raise TypeError("Input must be numpy array")
+            if not self.is_8_bit(np_array):
+                raise ValueError("Input must be uint8 array")
+
+            original_shape = np_array.shape
+            normalized = self.normalize(np_array.copy())
+
+            tile_h, tile_w = self.tile_size
+            h, w = original_shape[:2]
+
+            # Calculate padding and store metadata
+            pad_h = (tile_h - (h % tile_h)) % tile_h
+            pad_w = (tile_w - (w % tile_w)) % tile_w
+
+            self.last_padding_info[idx] = {
+                'original_shape': original_shape,
+                'pad_h': pad_h,
+                'pad_w': pad_w,
+                'is_grayscale': len(original_shape) == 2
+            }
+
+            # Create proper pad width
+            if len(original_shape) == 3:
+                pad_width = ((0, pad_h), (0, pad_w), (0, 0))
+            else:
+                pad_width = ((0, pad_h), (0, pad_w))
+
+            padded = np.pad(normalized, pad_width, mode=pad_mode)
+            padded_h, padded_w = padded.shape[:2]
+
+            # Generate tiles
+            tiles = []
+            for i in range(0, padded_h, tile_h):
+                for j in range(0, padded_w, tile_w):
+                    tile = padded[i:i + tile_h, j:j + tile_w]
+                    if tile.shape[:2] != (tile_h, tile_w):
+                        tile = np.pad(tile,
+                                      ((0, tile_h - tile.shape[0]),
+                                       (0, tile_w - tile.shape[1])),
+                                      mode=pad_mode)
+                    tiles.append(tile)
+            all_tiles.extend(tiles)
+
+        return np.array(all_tiles)  # Convert to numpy array
+
+    def reconstruct_image(self, tiles, original_idx=0):
+        """Reconstruct image from tiles"""
+        info = self.last_padding_info.get(original_idx)
+        if not info:
+            raise ValueError("No padding info found for this index")
+
+        tile_h, tile_w = self.tile_size
+        h, w = info['original_shape'][:2]
+        pad_h = info['pad_h']
+        pad_w = info['pad_w']
+
+        # Calculate grid dimensions
+        rows = (h + pad_h) // tile_h
+        cols = (w + pad_w) // tile_w
+
+        # Create proper reconstruction shape
+        if info['is_grayscale']:
+            recon_shape = (h + pad_h, w + pad_w)
+        else:
+            recon_shape = (h + pad_h, w + pad_w, info['original_shape'][2])
+
+        reconstructed = np.zeros(recon_shape, dtype=np.float32)
+
+        # Reconstruct with tiles
+        for i in range(rows):
+            for j in range(cols):
+                idx = i * cols + j
+                reconstructed[i * tile_h:(i + 1) * tile_h,
+                j * tile_w:(j + 1) * tile_w] = tiles[idx]
+
+        # Crop and convert
+        final_image = np.clip(reconstructed[:h,:w], 0, 1)
+        if info['is_grayscale']:
+            final_image = np.squeeze(final_image)
+
+        return (final_image * 255).astype(np.uint8)
+
+    def depth_to_rgb(self, depth_map, cmap='plasma'):
+        """
+        Convert a depth map (2D float32 array) to an RGB image using a colormap.
+
+        Args:
+            depth_map (np.ndarray): 2D array of predicted depth values.
+            cmap (str): Matplotlib colormap name.
+
+        Returns:
+            np.ndarray: RGB image (H, W, 3) as uint8.
+        """
+        if not isinstance(depth_map, np.ndarray) or depth_map.ndim != 2:
+            raise ValueError("Input must be a 2D numpy array (grayscale depth map)")
+
+        # Normalize depth to [0, 1]
+        min_val = np.min(depth_map)
+        max_val = np.max(depth_map)
+        if max_val - min_val == 0:
+            norm_depth = np.zeros_like(depth_map, dtype=np.float32)
+        else:
+            norm_depth = (depth_map - min_val) / (max_val - min_val)
+
+        # Apply colormap
+        colormap = plt.get_cmap(cmap)
+        colored = colormap(norm_depth)  # Returns RGBA
+
+        rgb = (colored[:, :, :3] * 255).astype(np.uint8)
+        return rgb
