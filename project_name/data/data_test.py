@@ -49,7 +49,7 @@ def threaded_make_data_array(data: list[str], name: str) -> None:
     multithread_data_test_output.append((name, whole_data))
 
 
-def test_data(data: ndarray, name: str):
+def test_data(data: ndarray, name: str) -> None:
     """test normality and plot the histogram
 
     Args:
