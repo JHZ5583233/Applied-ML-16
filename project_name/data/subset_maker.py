@@ -3,11 +3,13 @@ import random
 import shutil
 import threading
 import matplotlib.pyplot as plt
+import numpy as np
 from scipy.stats import normaltest
 from psutil import virtual_memory
 from shutil import rmtree
 from data_test import (test_dataset_normality,
                        threaded_make_data_array,
+                       test_data,
                        multithread_data_test_output)
 from path_grapper import get_all_data_path_names
 
@@ -59,14 +61,10 @@ def subset_full_dataset(amount_samples: int, full_data_folder: str) -> None:
         for thread_output in multithread_data_test_output:
             name, data = thread_output
 
-            normality = normaltest(data)
+            test_data(data, name)
 
-            plt.hist(data)
-            plt.xlabel("Depth")
-            plt.ylabel("Frequency")
-            plt.title(f"{name} | norm: stat:{normality.statistic:0.2f}, " +
-                      f"p:{normality.pvalue:0.2f}")
-            plt.show()
+        test_data(np.concat([_[1] for _ in multithread_data_test_output]),
+                  "whole data")
     else:
         for folder in selected_data:
             test_dataset_normality(folder, "sub folder")
@@ -102,7 +100,7 @@ def main() -> None:
     """
     This main to to run the data subset maker on it's own
     """
-    subset_full_dataset(10, "val")
+    subset_full_dataset(500, "train")
 
 
 if __name__ == '__main__':
