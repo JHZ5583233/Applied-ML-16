@@ -4,7 +4,6 @@ from scipy.stats import normaltest
 
 
 multithread_data_test_output: list[tuple[str, ndarray]] = []
-# TODO change to counter object?
 
 
 def test_dataset_normality(data: list[str], name: str) -> None:
@@ -50,7 +49,13 @@ def threaded_make_data_array(data: list[str], name: str) -> None:
     multithread_data_test_output.append((name, whole_data))
 
 
-def test_data(data, name):
+def test_data(data: ndarray, name: str):
+    """test normality and plot the histogram
+
+    Args:
+        data (ndarray): numpy array of 1 dimension of depth
+        name (str): name of the data
+    """
     normality = normaltest(data)
 
     plt.hist(data)
