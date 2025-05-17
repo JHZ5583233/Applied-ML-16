@@ -66,17 +66,15 @@ class TestPreprocessing(unittest.TestCase):
         depth_map = np.random.uniform(low=0.0, high=10.0, size=(480, 640)).astype(np.float32)
         rgb_depth = self.preprocessor.depth_to_rgb(depth_map, cmap='plasma')
 
-        # Check shape and dtype
+
         self.assertEqual(rgb_depth.shape, (480, 640, 3))
         self.assertEqual(rgb_depth.dtype, np.uint8)
 
-        # Ensure values are within 0–255
         self.assertTrue(np.all(rgb_depth >= 0) and np.all(rgb_depth <= 255))
 
-        # Check that it's not just black (i.e., has variation)
         self.assertGreater(np.std(rgb_depth), 0)
 
-        # Check it raises ValueError for bad input
+
         with self.assertRaises(ValueError):
             self.preprocessor.depth_to_rgb(np.ones((10, 10, 3)))  # Not 2D
 
