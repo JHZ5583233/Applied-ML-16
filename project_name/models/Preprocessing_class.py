@@ -20,7 +20,7 @@ class Preprocessing:
         return (np_array / np.iinfo(np_array.dtype).max).astype(np.float32)
 
     def tile_with_padding(self, np_arrays, pad_mode='constant'):
-        """Process single or multiple arrays"""
+        """Process single or multiple arrays into tiles with padding"""
         if not isinstance(np_arrays, (list, tuple)):
             np_arrays = [np_arrays]
 
@@ -38,7 +38,6 @@ class Preprocessing:
             tile_h, tile_w = self.tile_size
             h, w = original_shape[:2]
 
-            # Calculate padding and store metadata
             pad_h = (tile_h - (h % tile_h)) % tile_h
             pad_w = (tile_w - (w % tile_w)) % tile_w
 
@@ -49,7 +48,7 @@ class Preprocessing:
                 'is_grayscale': len(original_shape) == 2
             }
 
-            # Create proper pad width
+
             if len(original_shape) == 3:
                 pad_width = ((0, pad_h), (0, pad_w), (0, 0))
             else:
@@ -58,7 +57,7 @@ class Preprocessing:
             padded = np.pad(normalized, pad_width, mode=pad_mode)
             padded_h, padded_w = padded.shape[:2]
 
-            # Generate tiles
+
             tiles = []
             for i in range(0, padded_h, tile_h):
                 for j in range(0, padded_w, tile_w):
@@ -71,7 +70,7 @@ class Preprocessing:
                     tiles.append(tile)
             all_tiles.extend(tiles)
 
-        return np.array(all_tiles)  # Convert to numpy array
+        return np.array(all_tiles)
 
     def reconstruct_image(self, tiles, original_idx=0):
         """Reconstruct image from tiles"""
@@ -84,11 +83,11 @@ class Preprocessing:
         pad_h = info['pad_h']
         pad_w = info['pad_w']
 
-        # Calculate grid dimensions
+
         rows = (h + pad_h) // tile_h
         cols = (w + pad_w) // tile_w
 
-        # Create proper reconstruction shape
+
         if info['is_grayscale']:
             recon_shape = (h + pad_h, w + pad_w)
         else:
@@ -96,14 +95,14 @@ class Preprocessing:
 
         reconstructed = np.zeros(recon_shape, dtype=np.float32)
 
-        # Reconstruct with tiles
+
         for i in range(rows):
             for j in range(cols):
                 idx = i * cols + j
                 reconstructed[i * tile_h:(i + 1) * tile_h,
                 j * tile_w:(j + 1) * tile_w] = tiles[idx]
 
-        # Crop and convert
+
         final_image = np.clip(reconstructed[:h,:w], 0, 1)
         if info['is_grayscale']:
             final_image = np.squeeze(final_image)
@@ -124,7 +123,7 @@ class Preprocessing:
         if not isinstance(depth_map, np.ndarray) or depth_map.ndim != 2:
             raise ValueError("Input must be a 2D numpy array (grayscale depth map)")
 
-        # Normalize depth to [0, 1]
+
         min_val = np.min(depth_map)
         max_val = np.max(depth_map)
         if max_val - min_val == 0:
@@ -132,7 +131,7 @@ class Preprocessing:
         else:
             norm_depth = (depth_map - min_val) / (max_val - min_val)
 
-        # Apply colormap
+
         colormap = plt.get_cmap(cmap)
         colored = colormap(norm_depth)  # Returns RGBA
 
