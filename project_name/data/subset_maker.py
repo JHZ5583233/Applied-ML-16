@@ -2,9 +2,7 @@ import os
 import random
 import shutil
 import threading
-import matplotlib.pyplot as plt
 import numpy as np
-from scipy.stats import normaltest
 from psutil import virtual_memory
 from shutil import rmtree
 from data_test import (test_dataset_normality,
