@@ -1,5 +1,4 @@
 import numpy as np
-from PIL import Image
 import matplotlib.pyplot as plt
 
 
@@ -26,7 +25,6 @@ class Preprocessing:
 
         all_tiles = []
         for idx, np_array in enumerate(np_arrays):
-            # Validate input before normalization
             if not isinstance(np_array, np.ndarray):
                 raise TypeError("Input must be numpy array")
             if not self.is_8_bit(np_array):
@@ -48,7 +46,6 @@ class Preprocessing:
                 'is_grayscale': len(original_shape) == 2
             }
 
-
             if len(original_shape) == 3:
                 pad_width = ((0, pad_h), (0, pad_w), (0, 0))
             else:
@@ -57,16 +54,17 @@ class Preprocessing:
             padded = np.pad(normalized, pad_width, mode=pad_mode)
             padded_h, padded_w = padded.shape[:2]
 
-
             tiles = []
             for i in range(0, padded_h, tile_h):
                 for j in range(0, padded_w, tile_w):
                     tile = padded[i:i + tile_h, j:j + tile_w]
                     if tile.shape[:2] != (tile_h, tile_w):
-                        tile = np.pad(tile,
-                                      ((0, tile_h - tile.shape[0]),
-                                       (0, tile_w - tile.shape[1])),
-                                      mode=pad_mode)
+                        tile = np.pad(
+                            tile,
+                            ((0, tile_h - tile.shape[0]),
+                             (0, tile_w - tile.shape[1])),
+                            mode=pad_mode
+                        )
                     tiles.append(tile)
             all_tiles.extend(tiles)
 
@@ -83,10 +81,8 @@ class Preprocessing:
         pad_h = info['pad_h']
         pad_w = info['pad_w']
 
-
         rows = (h + pad_h) // tile_h
         cols = (w + pad_w) // tile_w
-
 
         if info['is_grayscale']:
             recon_shape = (h + pad_h, w + pad_w)
@@ -95,15 +91,15 @@ class Preprocessing:
 
         reconstructed = np.zeros(recon_shape, dtype=np.float32)
 
-
         for i in range(rows):
             for j in range(cols):
                 idx = i * cols + j
-                reconstructed[i * tile_h:(i + 1) * tile_h,
-                j * tile_w:(j + 1) * tile_w] = tiles[idx]
+                reconstructed[
+                    i * tile_h:(i + 1) * tile_h,
+                    j * tile_w:(j + 1) * tile_w
+                ] = tiles[idx]
 
-
-        final_image = np.clip(reconstructed[:h,:w], 0, 1)
+        final_image = np.clip(reconstructed[:h, :w], 0, 1)
         if info['is_grayscale']:
             final_image = np.squeeze(final_image)
 
@@ -111,7 +107,8 @@ class Preprocessing:
 
     def depth_to_rgb(self, depth_map, cmap='plasma'):
         """
-        Convert a depth map (2D float32 array) to an RGB image using a colormap.
+        Convert a depth map (2D float32 array) to
+        an RGB image using a colormap.
 
         Args:
             depth_map (np.ndarray): 2D array of predicted depth values.
@@ -121,8 +118,8 @@ class Preprocessing:
             np.ndarray: RGB image (H, W, 3) as uint8.
         """
         if not isinstance(depth_map, np.ndarray) or depth_map.ndim != 2:
-            raise ValueError("Input must be a 2D numpy array (grayscale depth map)")
-
+            raise ValueError("Input must be a 2D numpy array "
+                             "(grayscale depth map)")
 
         min_val = np.min(depth_map)
         max_val = np.max(depth_map)
@@ -131,9 +128,7 @@ class Preprocessing:
         else:
             norm_depth = (depth_map - min_val) / (max_val - min_val)
 
-
         colormap = plt.get_cmap(cmap)
         colored = colormap(norm_depth)  # Returns RGBA
-
         rgb = (colored[:, :, :3] * 255).astype(np.uint8)
         return rgb
