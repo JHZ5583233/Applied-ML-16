@@ -4,6 +4,9 @@ from typing import Tuple, Union, List
 
 
 class Preprocessing:
+    """
+    Preprocessing class for preprocessing image and depth data.
+    """
     def __init__(self, tile_size: Tuple[int, int] = (256, 256)) -> None:
         """
         Initialize the Preprocessing class with a tile size.
