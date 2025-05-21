@@ -7,10 +7,12 @@ multithread_data_test_output: list[tuple[str, ndarray]] = []
 
 
 def test_dataset_normality(data: list[str], name: str) -> None:
-    """
-    plots the histogram of given depth maps.
+    """Gets the data from given list of data point and plots a histogram and
+    normality on them.
 
-    data: list of path names to the data point name
+    Args:
+        data (list[str]): list of path names to data points
+        name (str): what name to give the plot
     """
     whole_data = array([])
     max_n = 0
@@ -18,9 +20,9 @@ def test_dataset_normality(data: list[str], name: str) -> None:
     for data_point in data:
         matrix: ndarray = load(data_point + "_depth.npy")
         max_n = max(max_n, matrix.max())
-        whole_data = concatenate([whole_data, matrix.flatten()])
+        whole_data = concatenate([whole_data,
+                                  matrix.flatten()[whole_data < 100]])
 
-    whole_data = whole_data[whole_data < 100]
     normality = normaltest(whole_data)
 
     plt.hist(whole_data)
@@ -32,10 +34,11 @@ def test_dataset_normality(data: list[str], name: str) -> None:
 
 
 def threaded_make_data_array(data: list[str], name: str) -> None:
-    """
-    create a tuple and append to thread output variable to plot on main thread.
+    """Get the data from list of path names. This is for threaded work.
 
-    data: list of path names to the data point name
+    Args:
+        data (list[str]): list of path names
+        name (str): what name to give the plot that follows.
     """
     whole_data = array([])
     max_n = 0
@@ -43,8 +46,8 @@ def threaded_make_data_array(data: list[str], name: str) -> None:
     for data_point in data:
         matrix: ndarray = load(data_point + "_depth.npy")
         max_n = max(max_n, matrix.max())
-        whole_data = concatenate([whole_data, matrix.flatten()])
-    whole_data = whole_data[whole_data < 100]
+        whole_data = concatenate([whole_data,
+                                  matrix.flatten()[whole_data < 100]])
 
     multithread_data_test_output.append((name, whole_data))
 

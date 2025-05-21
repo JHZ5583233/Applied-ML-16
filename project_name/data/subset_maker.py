@@ -13,8 +13,11 @@ from path_grapper import get_all_data_path_names
 
 
 def subset_full_dataset(amount_samples: int, full_data_folder: str) -> None:
-    """
-    This will sample n amount of samples from the data points in ful_data
+    """Subset given major data folder.
+
+    Args:
+        amount_samples (int): amount of sample you want in the end.
+        full_data_folder (str): folder name to get the data from
     """
     # list all file endings.
     file_directory = __file__
@@ -40,8 +43,10 @@ def subset_full_dataset(amount_samples: int, full_data_folder: str) -> None:
 
     print("running normality tests")
     # test normality.
+    # check if there is enough memory to do the tests.
     if virtual_memory().total > 1600000000:
         threads: list[threading.Thread] = []
+        # inti threads with data.
         for folder in selected_data:
             threads.append(threading.Thread(target=threaded_make_data_array,
                                             args=(folder, "sub folder",)))
