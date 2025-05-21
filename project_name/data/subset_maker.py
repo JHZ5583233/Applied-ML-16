@@ -2,19 +2,22 @@ import os
 import random
 import shutil
 import threading
-import matplotlib.pyplot as plt
-from scipy.stats import normaltest
+import numpy as np
 from psutil import virtual_memory
 from shutil import rmtree
 from data_test import (test_dataset_normality,
                        threaded_make_data_array,
+                       test_data,
                        multithread_data_test_output)
 from path_grapper import get_all_data_path_names
 
 
 def subset_full_dataset(amount_samples: int, full_data_folder: str) -> None:
-    """
-    This will sample n amount of samples from the data points in ful_data
+    """Subset given major data folder.
+
+    Args:
+        amount_samples (int): amount of sample you want in the end.
+        full_data_folder (str): folder name to get the data from
     """
     # list all file endings.
     file_directory = __file__
@@ -40,8 +43,10 @@ def subset_full_dataset(amount_samples: int, full_data_folder: str) -> None:
 
     print("running normality tests")
     # test normality.
+    # check if there is enough memory to do the tests.
     if virtual_memory().total > 1600000000:
         threads: list[threading.Thread] = []
+        # inti threads with data.
         for folder in selected_data:
             threads.append(threading.Thread(target=threaded_make_data_array,
                                             args=(folder, "sub folder",)))
@@ -59,14 +64,10 @@ def subset_full_dataset(amount_samples: int, full_data_folder: str) -> None:
         for thread_output in multithread_data_test_output:
             name, data = thread_output
 
-            normality = normaltest(data)
+            test_data(data, name)
 
-            plt.hist(data)
-            plt.xlabel("Depth")
-            plt.ylabel("Frequency")
-            plt.title(f"{name} | norm: stat:{normality.statistic:0.2f}, " +
-                      f"p:{normality.pvalue:0.2f}")
-            plt.show()
+        test_data(np.concat([_[1] for _ in multithread_data_test_output]),
+                  "whole data")
     else:
         for folder in selected_data:
             test_dataset_normality(folder, "sub folder")
@@ -102,7 +103,7 @@ def main() -> None:
     """
     This main to to run the data subset maker on it's own
     """
-    subset_full_dataset(10, "val")
+    subset_full_dataset(500, "train")
 
 
 if __name__ == '__main__':

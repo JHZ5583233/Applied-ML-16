@@ -5,8 +5,10 @@ path_multithread_output: list[list[str]] = []
 
 
 def grab_data_from_folder(main_folder: str) -> None:
-    """
-    Grap data from the given folder.
+    """Grabs the datapoint names from the major folder given
+
+    Args:
+        main_folder (str): the major folder liek 'indoor' or 'outdoor'
     """
     datapoint_directories: list[str] = [main_folder]
     for _ in range(3):
@@ -28,8 +30,14 @@ def grab_data_from_folder(main_folder: str) -> None:
 
 
 def get_all_data_path_names(data_folder: str) -> list[list[str]]:
-    """
-    get all path names of the data points name in the full data folder
+    """Gets all data point paths from train or val folders.
+
+    Args:
+        data_folder (str): the main folder to
+        get the path names like train/val.
+
+    Returns:
+        list[list[str]]: two list that contain all data point path names.
     """
     file_directory = __file__
     data_directory = os.path.join(os.path.split(file_directory)[0],
@@ -59,8 +67,10 @@ def get_all_data_path_names(data_folder: str) -> list[list[str]]:
 
 
 def get_train_data_folders() -> list[str]:
-    """
-    get all the folder names in the subset data folder
+    """Get the data folders path names in the subsetted data.
+
+    Returns:
+        list[str]: what subset to the get like 'train' or 'val'.
     """
     file_directory = __file__
     data_directory = os.path.join(os.path.split(file_directory)[0],
