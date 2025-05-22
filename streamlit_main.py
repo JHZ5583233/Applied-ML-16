@@ -4,7 +4,10 @@ import numpy as np
 from io import BytesIO
 
 
-def main():
+def main() -> None:
+    """
+    Main function where the stream lit app runs.
+    """
     st.title("Streamlit demo for Applied Machine Learning: Depth prediction.")
     st.divider()
     intro_paragraph = """
