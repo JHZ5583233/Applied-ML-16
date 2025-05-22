@@ -5,14 +5,14 @@ from io import BytesIO
 
 
 def main():
-    st.title("Streamlit demo for Aplied Machine Learning: Depth prediction.")
+    st.title("Streamlit demo for Applied Machine Learning: Depth prediction.")
     st.divider()
     intro_paragraph = """
     This is a stream lit demo for the AML project of group 16.
     The project is a depth estimating model from a RGB image.
 
     In this demo you will be allowed to upload an image covert it using our
-    model and download the resulting detph image from it.
+    model and download the resulting depth image from it.
     """
     st.markdown(intro_paragraph)
     st.divider()
