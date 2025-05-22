@@ -8,8 +8,8 @@ from torch.utils.data import DataLoader, Dataset
 from PIL import Image
 from typing import Tuple
 
-from Models.cnn import CNNBackbone
-from Preprocessing.preprocessing import Preprocessing
+from models.cnn import CNNBackbone
+from models import Preprocessing
 
 # Locate your Data folder
 BASE_DIR = Path(__file__).parent.parent.parent
@@ -17,7 +17,10 @@ DATA_DIR = BASE_DIR / "Data"
 
 
 class CNNDataset(Dataset):
-    def __init__(self, split: str, tile_size: Tuple[int, int] = (256, 256)) -> None:
+    def __init__(
+            self,
+            split: str,
+            tile_size: Tuple[int, int] = (256, 256)) -> None:
         """
         split: 'train_subset' or 'val_subset' folder under Data/
         """
@@ -46,8 +49,8 @@ class CNNDataset(Dataset):
         depth_norm = self.normalizer(depth)
 
         # Print debugging information for shape
-        #print(f"Depth shape before normalization: {depth.shape}")
-        #print(f"Depth shape after normalization: {depth_norm.shape}")
+        # print(f"Depth shape before normalization: {depth.shape}")
+        # print(f"Depth shape after normalization: {depth_norm.shape}")
 
         # Ensure depth_norm is 2D
         if depth_norm.ndim > 2:
@@ -78,9 +81,9 @@ class CNNDataset(Dataset):
 
 
 def train_cnn(
-    epochs: int, 
-    batch_size: int, 
-    lr: float, 
+    epochs: int,
+    batch_size: int,
+    lr: float,
     freeze_epochs: int
 ) -> None:
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -125,7 +128,7 @@ def train_cnn(
         if epoch == freeze_epochs + 1:
             for param in model.backbone.parameters():
                 param.requires_grad = True
-            print("-> Backbone unfrozen")
+            print("Backbone unfrozen")
 
         # Training
         model.train()
@@ -162,4 +165,3 @@ def train_cnn(
     output_path = BASE_DIR / "cnn_best.pth"
     torch.save(model.state_dict(), output_path)
     print(f"Saved best model to {output_path}")
-
