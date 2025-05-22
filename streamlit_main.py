@@ -1,6 +1,7 @@
 import streamlit as st
 from PIL import Image
 import numpy as np
+from io import BytesIO
 
 
 def main():
@@ -59,10 +60,20 @@ def main():
     if not ('depth_output' in st.session_state):
         return
 
+    file_name = st.text_input("file name",
+                              "depth_map")
     prepare_export = st.button("prepare depth map export")
 
+    if file_name == "":
+        st.error("empty name can not generate file")
+        return
+
     if prepare_export and st.session_state["depth_output"].any():
-        pass
+        with BytesIO() as buffer:
+            np.save(buffer, st.session_state["depth_output"])
+            st.download_button("download depth map",
+                               buffer,
+                               file_name + ".npy")
 
     st.divider()
 
