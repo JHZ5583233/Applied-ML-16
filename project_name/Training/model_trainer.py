@@ -17,7 +17,7 @@ DATA_DIR = BASE_DIR / "Data"
 
 
 class CNNDataset(Dataset):
-    "Class to load and preprocess images and depth maps for CNN training."
+    """Class to load and preprocess images and depth maps for CNN training."""
     def __init__(
             self,
             split: str,
@@ -33,11 +33,11 @@ class CNNDataset(Dataset):
         self.tile_h, self.tile_w = tile_size
 
     def __len__(self) -> int:
-        "Returns the number of samples in the dataset."
+        """Returns the number of samples in the dataset."""
         return len(self.samples)
 
     def __getitem__(self, idx: int) -> Tuple[torch.Tensor, torch.Tensor]:
-        "returns a tuple (image, depth) for the given index."
+        """returns a tuple (image, depth) for the given index."""
         sample_dir = self.samples[idx]
         image_path = next(sample_dir.glob("*.png"))
         depth_path = next(sample_dir.glob("*_depth.npy"))
@@ -89,7 +89,7 @@ def train_cnn(
     lr: float,
     freeze_epochs: int
 ) -> None:
-    "Method to train the CNN model."
+    """Method to train the CNN model."""
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print(
         f"Training CNN: epochs={epochs}, "

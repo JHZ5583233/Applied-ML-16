@@ -9,6 +9,7 @@ class CNNBackbone(nn.Module):
     """
 
     def __init__(self, pretrained: bool = True) -> None:
+        """initialize the CNN backbone."""
         super().__init__()
         # Load ResNet-34 and remove classifier
         resnet = models.resnet34(pretrained=pretrained)
