@@ -15,17 +15,16 @@ def main():
     """
     st.markdown(intro_paragraph)
     st.divider()
-    rgb_image = None
-    depth_output = None
     upload_text = """
     Here you will upload an RGb 8-bit colour image for depth estimation.
     """
     st.markdown(upload_text)
-    uploaded_image = st.file_uploader(label="Upload image",
-                                      type=[".png", ".jpeg"])
+    st.session_state["upload_image"] = st.file_uploader(label="Upload image",
+                                                        type=[".png", ".jpeg"])
 
-    if uploaded_image:
-        rgb_image = np.array(Image.open(uploaded_image))
+    if ("upload_image" in st.session_state and
+            st.session_state["upload_image"] is not None):
+        rgb_image = np.array(Image.open(st.session_state["upload_image"]))
         image_size = rgb_image.shape
         st.image(rgb_image)
         st.write(f"height: {image_size[0]}, width: {image_size[1]}, " +
@@ -34,19 +33,34 @@ def main():
         if image_size[2] > 3:
             st.error("We do not accept RGBa images.")
 
+    st.divider()
+    if (not ("upload_image" in st.session_state) or
+            st.session_state["upload_image"] is None):
+        st.session_state.pop("depth_output")
+        return
+
     run_model = st.button("Start conversion.")
 
     if run_model and rgb_image.any():
         st.write("work in progress")
 
-        depth_output = np.random.random((image_size[0], image_size[1], 1))
+        st.session_state["depth_output"] = np.random.random((image_size[0],
+                                                             image_size[1], 1))
 
-    if depth_output is not None and depth_output.any():
-        st.image(depth_output)
+    if "depth_output" in st.session_state:
+        st.image(st.session_state["depth_output"])
+        depth_image_size = st.session_state["depth_output"].shape
+        st.write(f"height: {depth_image_size[0]}," +
+                 f" width: {depth_image_size[1]}, " +
+                 f"channels: {depth_image_size[2]}")
+
+    st.divider()
+    if not ('depth_output' in st.session_state):
+        return
 
     prepare_export = st.button("prepare depth map export")
 
-    if prepare_export and depth_output.any():
+    if prepare_export and st.session_state["depth_output"].any():
         pass
 
 
