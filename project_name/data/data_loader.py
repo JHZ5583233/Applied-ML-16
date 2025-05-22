@@ -9,9 +9,11 @@ class DataLoader:
     Data loader class for loading data from the subsetted data.
     """
     def __init__(self, folder: Literal["train", "Val"]) -> None:
-        """
-        initialise the data loader to get data from subsettes train or val
-        dataset.
+        """Initialise the class
+
+        Args:
+            folder (Literal[&quot;train&quot;, &quot;Val&quot;]):
+            which subset folder to get the data from.
         """
         self.folder = folder + "_subset"
         file_directory = __file__
@@ -25,15 +27,17 @@ class DataLoader:
         self.data_index = 0
 
     def increment_index(self) -> None:
-        """
-        increments the data index count and makes sure it doesn't go over
+        """Increments the index of the data path list.
+        makes sure it doesn't go over the index limit.
         """
         self.data_index += 1
         self.data_index %= len(self.data_paths)
 
     def get_data(self) -> list[np.ndarray]:
-        """
-        get the image and depth data from the subsetted data
+        """Gets the image and depth data from the list of subset data.
+
+        Returns:
+            list[np.ndarray]: a size 2 list of image data and then depth data.
         """
         current_data_path = self.data_paths[self.data_index]
         self.increment_index()
