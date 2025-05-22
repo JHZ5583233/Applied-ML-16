@@ -36,7 +36,8 @@ def main():
     st.divider()
     if (not ("upload_image" in st.session_state) or
             st.session_state["upload_image"] is None):
-        st.session_state.pop("depth_output")
+        if "depth_output" in st.session_state:
+            st.session_state.pop("depth_output")
         return
 
     run_model = st.button("Start conversion.")
@@ -62,6 +63,8 @@ def main():
 
     if prepare_export and st.session_state["depth_output"].any():
         pass
+
+    st.divider()
 
 
 if __name__ == '__main__':
