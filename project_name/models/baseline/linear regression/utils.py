@@ -1,31 +1,31 @@
 import sys
 sys.path.append("../")
 import pickle
-from sklearn.linear_model import LinearRegression
 from data.path_grapper import get_train_data_folders
-from model import model
+from model import LinearModelHandler  # Import the class instead of functions
+from data_loader import LinearRegressionDataset
+
+
+
+def load_linear_data(split: str):
+    dataset = LinearRegressionDataset(split)
+    X, y = dataset.get_all()
+    return X, y
 
 
 def main():
-    train_data = get_train_data_folders("train")
-    test_data = 0
+    # Load train/test data similarly to CNNDataset usage
+    X_train, y_train = load_linear_data("train")
+    X_test, y_test = load_linear_data("test")
 
-    # Linear Regression
-    model = model.train_linear_models(
-        data=train_data, num_of_models=3
-    )
-    lr_rmse, lr_mae, lr_inference_time = model.evaluate_linear_models(
-        model, test_data[0], [test_data[1], test_data[2], test_data[3]]
-    )
+    # Now use your existing linear model training and evaluation
+    model_handler = LinearModelHandler()
+    model_handler.train(X_train, y_train)
 
-    
-    with open("linear_regression.pkl") as file:  
-        pickle.dump(model, file)
-    
-    print("Linear Regression Metrics")
-    print("\tRMSE: ", lr_rmse)
-    print("\tMAE: ", lr_mae)
-    print("\tInference time: ", lr_inference_time)
+    rmse, mae, inference_time = model_handler.evaluate(X_test, y_test)
+
+    print(f"RMSE: {rmse}, MAE: {mae}, Inference Time: {inference_time:.4f} s")
+
 
 if __name__ == "__main__":
     main()
