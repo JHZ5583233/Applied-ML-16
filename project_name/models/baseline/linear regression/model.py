@@ -5,11 +5,16 @@ import time
 import numpy as np
 
 class LinearModelHandler:
+
+    
     """
     Handles training, prediction, and evaluation of a linear regression model.
     """
 
     def __init__(self):
+        """
+        Initialize  the model
+        """
         self.model: LinearRegression = None
 
     def train(self, X_train: np.ndarray, y_train: np.ndarray) -> None:
@@ -23,11 +28,12 @@ class LinearModelHandler:
             raise ValueError("Model has not been trained yet.")
         return self.model.predict(X_test)
 
-    def evaluate(self, X_test: np.ndarray, y_test: np.ndarray) -> Tuple[float, float, float]:
+    def evaluate(self, X_test: np.ndarray,
+                y_test: np.ndarray) -> Tuple[float, float, float]:
         """Evaluate the trained model."""
         if self.model is None:
             raise ValueError("Model has not been trained yet.")
-        
+
         start_time = time.time()
         y_pred = self.model.predict(X_test)
         end_time = time.time()

@@ -3,6 +3,8 @@ import numpy as np
 from data.data_loader import DataLoader
 
 class LinearRegressionDataset:
+
+    
     """Dataset loader for Linear Regression training & testing data."""
 
     def __init__(self, split: str):
@@ -25,9 +27,11 @@ class LinearRegressionDataset:
         self.y = np.array(self.y)
 
     def __len__(self) -> int:
+        """retur the lenght of the data set"""
         return len(self.X)
 
     def __getitem__(self, idx: int) -> Tuple[Any, Any]:
+        """Return an item at a specidied index"""
         return self.X[idx], self.y[idx]
 
     def get_all(self) -> Tuple[np.ndarray, np.ndarray]:
