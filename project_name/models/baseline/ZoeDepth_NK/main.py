@@ -1,12 +1,21 @@
-import torch # type: ignore
-from torch.utils.data import DataLoader # type: ignore
+import torch   # type: ignore
+from torch.utils.data import DataLoader   # type: ignore
 from data_loader import ZoeDepthDataset
 from eval import evaluate_zoedepth_model
 
 
 class ZoeDepthEvaluator:
-    def __init__(self, split: str = "val", batch_size: int = 1, num_workers: int = 4):
-        self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    def __init__(
+        self,
+        split: str = "val",
+        batch_size: int = 1,
+        num_workers: int = 4
+    ):
+
+        self.device = torch.device(
+            "cuda" if torch.cuda.is_available() else "cpu"
+            )
+
         self.split = split
         self.batch_size = batch_size
         self.num_workers = num_workers

@@ -1,7 +1,7 @@
 import time
 import numpy as np
-import torch # type: ignore
-import torch.nn.functional as F # type: ignore
+import torch   # type: ignore
+import torch.nn.functional as F   # type: ignore
 from sklearn.metrics import mean_absolute_error, root_mean_squared_error
 
 
@@ -26,7 +26,12 @@ def evaluate_zoedepth_model(model, dataloader, device):
                 preds = preds[0]
 
             if preds.shape[-2:] != depths_gt.shape[-2:]:
-                preds = F.interpolate(preds, size=depths_gt.shape[-2:], mode="bilinear", align_corners=False)
+                preds = F.interpolate(
+                        preds,
+                        size=depths_gt.shape[-2:],
+                        mode="bilinear",
+                        align_corners=False
+                        )
 
             preds_np = preds.squeeze().cpu().numpy().flatten()
             gt_np = depths_gt.squeeze().cpu().numpy().flatten()
@@ -37,7 +42,7 @@ def evaluate_zoedepth_model(model, dataloader, device):
             maes.append(mae)
             rmses.append(rmse)
 
-    print(f"ZoeDepth Evaluation:")
+    print("ZoeDepth Evaluation:")
     print(f"  Avg RMSE: {np.mean(rmses):.4f}")
     print(f"  Avg MAE:  {np.mean(maes):.4f}")
     print(f"  Avg Inference time: {np.mean(times):.4f} seconds")

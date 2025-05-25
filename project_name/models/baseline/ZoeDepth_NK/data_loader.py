@@ -1,10 +1,6 @@
-from pathlib import Path
 from typing import Tuple
-import torch # type: ignore
-from torch.utils.data import Dataset # type: ignore
-import numpy as np
-
-
+import torch   # type: ignore
+from torch.utils.data import Dataset   # type: ignore
 from data.data_loader import DataLoader as OriginalDataLoader
 
 

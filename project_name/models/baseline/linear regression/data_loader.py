@@ -2,9 +2,8 @@ from typing import Tuple, Any
 import numpy as np
 from data.data_loader import DataLoader
 
-class LinearRegressionDataset:
 
-    
+class LinearRegressionDataset:
     """Dataset loader for Linear Regression training & testing data."""
 
     def __init__(self, split: str):

@@ -5,7 +5,7 @@ import numpy as np
 
 class LinearRegressionPipeline:
     """
-    Pipeline to handle data loading, training, 
+    Pipeline to handle data loading, training,
     and evaluation of a linear regression model.
     """
 
@@ -37,7 +37,8 @@ class LinearRegressionPipeline:
         print("Evaluating model...")
         rmse, mae, inference_time = self.model_handler.evaluate(
             self.X_test, self.y_test)
-        print(f"RMSE: {rmse:.4f}, MAE: {mae:.4f}, Inference Time: {inference_time:.4f} s")
+        print(f"RMSE: {rmse:.4f}, MAE: {mae:.4f}")
+        print(f"Inference Time: {inference_time:.4f} s")
 
     def run(self) -> None:
         """Executes the full pipeline."""

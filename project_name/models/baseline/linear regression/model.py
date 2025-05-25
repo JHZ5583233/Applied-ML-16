@@ -4,9 +4,8 @@ from typing import Tuple
 import time
 import numpy as np
 
-class LinearModelHandler:
 
-    
+class LinearModelHandler:
     """
     Handles training, prediction, and evaluation of a linear regression model.
     """
@@ -28,8 +27,12 @@ class LinearModelHandler:
             raise ValueError("Model has not been trained yet.")
         return self.model.predict(X_test)
 
-    def evaluate(self, X_test: np.ndarray,
-                y_test: np.ndarray) -> Tuple[float, float, float]:
+    def evaluate(
+        self,
+        X_test: np.ndarray,
+        y_test: np.ndarray
+    ) -> Tuple[float, float, float]:
+
         """Evaluate the trained model."""
         if self.model is None:
             raise ValueError("Model has not been trained yet.")
