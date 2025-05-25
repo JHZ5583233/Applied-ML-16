@@ -1,22 +1,28 @@
-from pathlib import Path
-from typing import Tuple, List, Any
+from typing import Tuple, Any
 import numpy as np
-
-from data.path_grapper import get_train_data_folders  # Assuming this is your data loader helper
-
+from data.data_loader import DataLoader
 
 class LinearRegressionDataset:
     """Dataset loader for Linear Regression training & testing data."""
-    
+
     def __init__(self, split: str):
         """
         Args:
             split (str): "train" or "test"
         """
-        # Use your existing helper to load folder data
-        data = get_train_data_folders(split)
-        self.X = data[0]
-        self.y = data[1]
+        mapped_split = "Val" if split.lower() == "test" else "train"
+        self.data_loader = DataLoader(mapped_split)
+
+        self.X = []
+        self.y = []
+
+        for _ in range(len(self.data_loader.data_paths)):
+            image, depth = self.data_loader.get_data()
+            self.X.append(image.flatten())
+            self.y.append(depth.mean())
+
+        self.X = np.array(self.X)
+        self.y = np.array(self.y)
 
     def __len__(self) -> int:
         return len(self.X)
@@ -24,6 +30,6 @@ class LinearRegressionDataset:
     def __getitem__(self, idx: int) -> Tuple[Any, Any]:
         return self.X[idx], self.y[idx]
 
-    def get_all(self) -> Tuple[List[Any], List[Any]]:
-        """Return full dataset as (X, y) lists."""
+    def get_all(self) -> Tuple[np.ndarray, np.ndarray]:
+        """Return full dataset as (X, y) numpy arrays."""
         return self.X, self.y

@@ -1,10 +1,8 @@
 from sklearn.linear_model import LinearRegression
-from sklearn.metrics import mean_absolute_error, root_mean_squared_error
-from typing import List, Tuple, Any
+from sklearn.metrics import mean_absolute_error, mean_squared_error
+from typing import Tuple
 import time
-
-from .utils import train_linear_regr  # Assumes this is a helper function that returns a trained LinearRegression
-
+import numpy as np
 
 class LinearModelHandler:
     """
@@ -14,41 +12,19 @@ class LinearModelHandler:
     def __init__(self):
         self.model: LinearRegression = None
 
-    def train(self, X_train: List[Any], y_train: List[Any]) -> None:
-        """
-        Train the linear regression model.
+    def train(self, X_train: np.ndarray, y_train: np.ndarray) -> None:
+        """Train the linear regression model."""
+        self.model = LinearRegression()
+        self.model.fit(X_train, y_train)
 
-        Args:
-            X_train (List[Any]): Training features.
-            y_train (List[Any]): Training targets.
-        """
-        self.model = train_linear_regr(X_train, y_train)
-
-    def predict(self, X_test: List[Any]) -> List[Any]:
-        """
-        Predict using the trained model.
-
-        Args:
-            X_test (List[Any]): Test features.
-
-        Returns:
-            List[Any]: Predicted values.
-        """
+    def predict(self, X_test: np.ndarray) -> np.ndarray:
+        """Predict using the trained model."""
         if self.model is None:
             raise ValueError("Model has not been trained yet.")
         return self.model.predict(X_test)
 
-    def evaluate(self, X_test: List[Any], y_test: List[Any]) -> Tuple[float, float, float]:
-        """
-        Evaluate the trained model.
-
-        Args:
-            X_test (List[Any]): Test features.
-            y_test (List[Any]): True target values.
-
-        Returns:
-            Tuple[float, float, float]: RMSE, MAE, and inference time.
-        """
+    def evaluate(self, X_test: np.ndarray, y_test: np.ndarray) -> Tuple[float, float, float]:
+        """Evaluate the trained model."""
         if self.model is None:
             raise ValueError("Model has not been trained yet.")
         
@@ -56,7 +32,7 @@ class LinearModelHandler:
         y_pred = self.model.predict(X_test)
         end_time = time.time()
 
-        rmse_score = root_mean_squared_error(y_test, y_pred)
+        rmse_score = mean_squared_error(y_test, y_pred, squared=False)
         mae_score = mean_absolute_error(y_test, y_pred)
         inference_time = end_time - start_time
 

@@ -1,8 +1,8 @@
 import time
 import numpy as np
-import torch
-import torch.nn.functional as F
-from sklearn.metrics import mean_absolute_error, mean_squared_error
+import torch # type: ignore
+import torch.nn.functional as F # type: ignore
+from sklearn.metrics import mean_absolute_error, root_mean_squared_error
 
 
 def evaluate_zoedepth_model(model, dataloader, device):
@@ -25,7 +25,6 @@ def evaluate_zoedepth_model(model, dataloader, device):
             if isinstance(preds, (list, tuple)):
                 preds = preds[0]
 
-            # Resize prediction to ground-truth size if needed
             if preds.shape[-2:] != depths_gt.shape[-2:]:
                 preds = F.interpolate(preds, size=depths_gt.shape[-2:], mode="bilinear", align_corners=False)
 
@@ -33,7 +32,7 @@ def evaluate_zoedepth_model(model, dataloader, device):
             gt_np = depths_gt.squeeze().cpu().numpy().flatten()
 
             mae = mean_absolute_error(gt_np, preds_np)
-            rmse = mean_squared_error(gt_np, preds_np, squared=False)
+            rmse = root_mean_squared_error(gt_np, preds_np, squared=False)
 
             maes.append(mae)
             rmses.append(rmse)

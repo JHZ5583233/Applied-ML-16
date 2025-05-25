@@ -1,35 +1,35 @@
 from pathlib import Path
 from typing import Tuple
+import torch # type: ignore
+from torch.utils.data import Dataset # type: ignore
 import numpy as np
-from PIL import Image
-import torch
-from torch.utils.data import Dataset
 
-BASE_DIR = Path(__file__).parent.parent.parent
-DATA_DIR = BASE_DIR / "Data"
+
+from data.data_loader import DataLoader as OriginalDataLoader
 
 
 class ZoeDepthDataset(Dataset):
     """
-    Dataset for ZoeDepth model:
-    Loads RGB images and corresponding depth ground truths.
+    PyTorch Dataset wrapper around the original custom DataLoader
+    (from data.data_loader import DataLoader).
     """
     def __init__(self, split: str):
-        self.folder = DATA_DIR / split
-        self.samples = sorted(d for d in self.folder.iterdir() if d.is_dir())
+        if split.lower() not in {"train", "val"}:
+            raise ValueError("Split must be 'train' or 'val'")
+        self.loader = OriginalDataLoader(split.lower())
+        self.total_samples = len(self.loader.data_paths)
 
     def __len__(self):
-        return len(self.samples)
+        return self.total_samples
 
     def __getitem__(self, idx) -> Tuple[torch.Tensor, torch.Tensor]:
-        sample_dir = self.samples[idx]
-        image_path = next(sample_dir.glob("*.png"))
-        depth_path = next(sample_dir.glob("*_depth.npy"))
+        self.loader.data_index = idx
+        data = self.loader.get_data()
 
-        image = Image.open(image_path).convert("RGB")
-        image = torch.from_numpy(np.array(image)).permute(2, 0, 1).float() / 255.0
+        image_np = data[0]
+        depth_np = data[1]
 
-        depth_gt = np.load(depth_path).astype(np.float32)
-        depth_gt = torch.from_numpy(depth_gt)
+        image = torch.from_numpy(image_np).permute(2, 0, 1).float() / 255.0
+        depth = torch.from_numpy(depth_np).float()
 
-        return image, depth_gt
+        return image, depth
