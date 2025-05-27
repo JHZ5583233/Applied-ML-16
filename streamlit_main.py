@@ -65,22 +65,32 @@ def main() -> None:
     run_model = st.button("Start conversion.")
 
     if run_model and "rgb_image" in st.session_state:
+        # TODO look at this part again
         st.write("work in progress")
+
         model = st.session_state["model"]
         input_image = st.session_state["rgb_image"]
-        orginal_shape = list(input_image.shape)[0:2] + [1]
+
+        original_shape = list(input_image.shape)[0:2] + [1]
         input_image = np.expand_dims(input_image, axis=0)
 
-        st.session_state["depth_output"] = model(
-            torch.tensor(input_image,
-                         device=st.session_state["device"],
-                         dtype=torch.float).permute(0, 3, 1, 2)
-            ).detach().numpy().reshape(orginal_shape)
+        tensor_input_image = torch.tensor(input_image,
+                                          device=st.session_state["device"],
+                                          dtype=torch.float).permute(0,
+                                                                     3,
+                                                                     1,
+                                                                     2)
+
+        output_model = model(tensor_input_image)
+        output_numpy = output_model.detach().numpy().reshape(original_shape)
+        st.session_state["depth_output"] = output_numpy
 
     if "depth_output" in st.session_state:
         max = np.max(st.session_state["depth_output"])
-        st.write((st.session_state["depth_output"].squeeze() / max) * 255)
-        st.image((st.session_state["depth_output"] / max) * 255, clamp=True)
+        st.image(((st.session_state["depth_output"] / max)
+                  * 255).astype(dtype=np.int8),
+                 clamp=True)
+
         depth_image_size = st.session_state["depth_output"].shape
         st.write(f"height: {depth_image_size[0]}," +
                  f" width: {depth_image_size[1]}, " +
