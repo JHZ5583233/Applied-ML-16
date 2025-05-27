@@ -87,8 +87,8 @@ def main() -> None:
 
     if "depth_output" in st.session_state:
         max = np.max(st.session_state["depth_output"])
-        st.image(((st.session_state["depth_output"] / max)
-                  * 255).astype(dtype=np.int8),
+        st.image(((st.session_state["depth_output"] / max) *
+                  255).astype(dtype=np.int8),
                  clamp=True)
 
         depth_image_size = st.session_state["depth_output"].shape
