@@ -13,7 +13,7 @@ Make sure you have the following software and tools installed:
 ## Getting Started
 ### general
 1. clone this repository.
-2. get the training and validation data
+2. get the training and validation data and place in the data folder in the project_name folder.
     * Data used to train our model
         1. download from google drive. [drive](https://drive.google.com/drive/folders/1k_WsVOjaULgb3N2JebxjTVqJjVsw85dP)
     * original data
