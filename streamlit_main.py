@@ -27,6 +27,9 @@ def main() -> None:
             join(file_location, "cnn_best.pth"), weights_only=True))
         st.session_state["model"].eval()
 
+    if not ("preprocess" in st.session_state):
+        st.session_state["preprocess"] = Preprocessing((200, 200))
+
     st.title("Streamlit demo for Applied Machine Learning: Depth prediction.")
     st.divider()
     intro_paragraph = """
@@ -68,7 +71,10 @@ def main() -> None:
                                 1,
                                 step=1,
                                 value=200)
-    st.write(tile_size)
+    st.write(f" the current tile size is {tile_size}")
+
+    if st.session_state["preprocess"].tile_size != tile_size:
+        st.session_state["preprocess"].tile_size = tile_size
 
     run_model = st.button("Start conversion.")
 
