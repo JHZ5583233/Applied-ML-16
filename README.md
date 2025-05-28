@@ -1,18 +1,25 @@
 # Applied ML Team 16
 
-Welcome to our repo for our project for Aplied machine learning project.
+Welcome to our repo for our project for Applied machine learning project.
 
-Our project is to train an model to aproximate depth data from rgb images in a tilling patern.
+Our project is to train an model to approximate depth data from rgb images in a tilling pattern.
 
 ## Prerequisites
 Make sure you have the following software and tools installed:
 
 - **Conda**: Conda is used for dependency management. This tools is a standard for a lot of machine learning libraries and has support for pip packages as well. "conda install --yes --file conda_requirements.txt"
+- **python 3.11**: a tested version of python that this repository works in.
 
 ## Getting Started
+### general
 1. clone this repository.
 2. instal the packages from "conda_requirements.txt"
-3.
+
+### API
+
+### streamlit
+1. run "streamlit run streamlit_main.py" when in the main folder of repository.
+2. follow instruction on the web demo.
 
 ### Unit testing
 You are expected to test your code using unit testing, which is a technique where small individual components of your code are tested in isolation.
