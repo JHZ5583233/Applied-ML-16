@@ -1,10 +1,12 @@
 import streamlit as st
-from PIL import Image
 import numpy as np
-from io import BytesIO
-from project_name.models.cnn import CNNBackbone
-from os.path import split, join
 import torch
+from PIL import Image
+from io import BytesIO
+from os.path import split, join
+
+from project_name.models.cnn import CNNBackbone
+from project_name.models.Preprocessing_class import Preprocessing
 
 
 def main() -> None:
@@ -61,6 +63,12 @@ def main() -> None:
         if "depth_output" in st.session_state:
             st.session_state.pop("depth_output")
         return
+
+    tile_size = st.number_input("tiling size of model",
+                                1,
+                                step=1,
+                                value=200)
+    st.write(tile_size)
 
     run_model = st.button("Start conversion.")
 
