@@ -79,11 +79,11 @@ def main() -> None:
     run_model = st.button("Start conversion.")
 
     if run_model and "rgb_image" in st.session_state:
-        # TODO look at this part again
         st.write("work in progress")
 
         model = st.session_state["model"]
         input_image = st.session_state["rgb_image"]
+        # TODO at preprocessing and postprocessing
 
         original_shape = list(input_image.shape)[0:2] + [1]
         input_image = np.expand_dims(input_image, axis=0)
