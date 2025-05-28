@@ -86,6 +86,7 @@ repository map:
 │   ├───features
 │   └───models
 ├───.gitignore
+├───cnn_best.pth # download from release page
 ├───main.py
 ├───streamlit_main.py
 ├───FastAPI.py
