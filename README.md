@@ -33,6 +33,8 @@ Both the commands below should be ran in the root folder of the repository
 #### Validate
 1. python main.py evaluate (model file name with extension) --batch-size (batch size)
 
+### Train and validate
+
 ### API
 1. run "uvicorn FastAPI:app --reload"
 
