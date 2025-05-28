@@ -13,10 +13,18 @@ Make sure you have the following software and tools installed:
 ## Getting Started
 ### general
 1. clone this repository.
-2. instal the packages from "conda_requirements.txt"
-3. download the model from the release page and place it in the root folder of the repository
+2. create conda environment with python 3.11
+3. instal the packages from "conda_requirements.txt"
+4. download the model from the release page and place it in the root folder of the repository
 
 ### Train and validate
+Both the commands below should be ran in the root folder of the repository
+
+#### Train
+1. python main.py --epochs (amount epoch) --batch-size (batch size) --lr (learning rate) --freeze-epochs (amount before freeze)
+
+#### Validate
+1. python main.py evaluate (model file name with extension) --batch-size (batch size)
 
 ### API
 1. run "uvicorn FastAPI:app --reload"
