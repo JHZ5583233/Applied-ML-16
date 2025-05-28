@@ -39,22 +39,19 @@ python -m unittest discover -v tests
 
 repository map:
 ```bash
-├───data  # Stores .csv
-├───models  # Stores .pkl
-├───notebooks  # Contains experimental .ipynbs
+├───.github
+│   └────data
+│        └──── style.yml
 ├───project_name
 │   ├───data  # For data processing, not storing .csv
 │   ├───features
 │   └───models  # For model creation, not storing .pkl
-├───reports
 ├───tests
 │   ├───data
 │   ├───features
 │   └───models
 ├───.gitignore
-├───.pre-commit-config.yaml
 ├───main.py
-├───train_model.py
 ├───conda_requirements.txt
-├───README.md
+└───README.md
 ```
