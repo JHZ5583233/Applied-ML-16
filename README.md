@@ -13,9 +13,15 @@ Make sure you have the following software and tools installed:
 ## Getting Started
 ### general
 1. clone this repository.
-2. create conda environment with python 3.11
-3. instal the packages from "conda_requirements.txt"
-4. download the model from the release page and place it in the root folder of the repository
+2. get the training and validation data
+    * used data
+        1. download from google drive. [drive](https://drive.google.com/drive/folders/1k_WsVOjaULgb3N2JebxjTVqJjVsw85dP)
+    * original data
+        1. download from original data. [website](https://diode-dataset.org/)
+        2. run subset_maker.py with amount sample and "val or "train" to get workable data folder.
+3. create conda environment with python 3.11
+4. instal the packages from "conda_requirements.txt"
+5. download the model from the release page and place it in the root folder of the repository
 
 ### Train and validate
 Both the commands below should be ran in the root folder of the repository
