@@ -50,12 +50,24 @@ python -m unittest discover -v tests
 repository map:
 ```bash
 ├───.github
-│   └────data
+│   └────workflows
 │        └──── style.yml
 ├───project_name
-│   ├───data  # For data processing, not storing .csv
-│   ├───features
-│   └───models  # For model creation, not storing .pkl
+│   ├───data
+│   │   ├───val_subset # only there when validating
+│   │   ├───train_subset # only there when training
+│   │   ├───data_loader.py
+│   │   ├───data_test.py
+│   │   ├───path_grapper.py
+│   │   └───subset_maker.py
+│   ├───models
+│   │   ├───cnn.py
+│   │   └───Preprocessing_class.py
+│   └───Training
+│       ├───Evaluation
+│       │   ├───evaluate.py
+│       │   └───validation.py
+│       └───model_trainer.py
 ├───tests
 │   ├───data
 │   ├───features
