@@ -73,8 +73,8 @@ def main() -> None:
                                 value=200)
     st.write(f" the current tile size is {tile_size}")
 
-    if st.session_state["preprocess"].tile_size != tile_size:
-        st.session_state["preprocess"].tile_size = tile_size
+    if st.session_state["preprocess"].tile_size[0] != tile_size:
+        st.session_state["preprocess"].tile_size = (tile_size, tile_size)
 
     run_model = st.button("Start conversion.")
 
@@ -83,10 +83,9 @@ def main() -> None:
 
         model = st.session_state["model"]
         input_image = st.session_state["rgb_image"]
-        # TODO at preprocessing and postprocessing
+        pre_post_process = st.session_state["preprocess"]
 
-        original_shape = list(input_image.shape)[0:2] + [1]
-        input_image = np.expand_dims(input_image, axis=0)
+        input_image = pre_post_process.tile_with_padding(input_image)
 
         tensor_input_image = torch.tensor(input_image,
                                           device=st.session_state["device"],
@@ -96,7 +95,12 @@ def main() -> None:
                                                                      2)
 
         output_model = model(tensor_input_image)
-        output_numpy = output_model.detach().numpy().reshape(original_shape)
+        output_numpy = output_model.detach().numpy()
+
+        st.write(output_numpy.shape)
+        # TODO remake shape
+        st.write(pre_post_process.reconstruct_image(output_numpy))
+
         st.session_state["depth_output"] = output_numpy
 
     if "depth_output" in st.session_state:
