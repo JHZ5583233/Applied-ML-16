@@ -40,9 +40,6 @@ Both the commands below should be ran in the root folder of the repository
 2. follow instruction on the web demo.
 
 ### Unit testing
-You are expected to test your code using unit testing, which is a technique where small individual components of your code are tested in isolation.
-
-An **example** is given in _tests/test_main.py_, which uses the standard _unittest_ Python module to test whether the function _hello_world_ from _main.py_ works as expected.
 
 To run all the tests developed using _unittest_, simply use:
 ```bash
