@@ -19,7 +19,7 @@ Make sure you have the following software and tools installed:
 
 ### API
 
-### streamlit
+### Streamlit
 1. run "streamlit run streamlit_main.py" when in the main folder of repository.
 2. follow instruction on the web demo.
 
@@ -55,7 +55,6 @@ repository map:
 ├───.pre-commit-config.yaml
 ├───main.py
 ├───train_model.py
-├───Pipfile
-├───Pipfile.lock
+├───conda_requirements.txt
 ├───README.md
 ```
