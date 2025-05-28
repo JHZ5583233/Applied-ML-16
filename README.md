@@ -14,10 +14,12 @@ Make sure you have the following software and tools installed:
 ### general
 1. clone this repository.
 2. instal the packages from "conda_requirements.txt"
+3. download the model from the release page and place it in the root folder of the repository
 
 ### Train and validate
 
 ### API
+1. run "uvicorn FastAPI:app --reload"
 
 ### Streamlit
 1. run "streamlit run streamlit_main.py" when in the main folder of repository.
@@ -52,6 +54,8 @@ repository map:
 │   └───models
 ├───.gitignore
 ├───main.py
+├───streamlit_main.py
+├───FastAPI.py
 ├───conda_requirements.txt
 └───README.md
 ```
