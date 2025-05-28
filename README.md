@@ -21,7 +21,7 @@ Make sure you have the following software and tools installed:
         2. run subset_maker.py with amount sample and "val or "train" to get workable data folder.
 3. create conda environment with python 3.11
 4. instal the packages from "conda_requirements.txt" using the command under.
-```basg
+```bash
 conda install --yes --file conda_requirements.txt"
 ```
 5. install pytorch using the command from their [website](https://pytorch.org/).
