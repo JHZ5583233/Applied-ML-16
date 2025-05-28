@@ -40,15 +40,6 @@ python main.py --epochs (amount epoch) --batch-size (batch size) --lr (learning 
 python main.py evaluate (model file name with extension) --batch-size (batch size)
 ```
 
-### Train and validate
-Both the commands below should be ran in the root folder of the repository
-
-#### Train
-1. python main.py --epochs (amount epoch) --batch-size (batch size) --lr (learning rate) --freeze-epochs (amount before freeze)
-
-#### Validate
-1. python main.py evaluate (model file name with extension) --batch-size (batch size)
-
 ### API
 1. run the following command in the root directory of the repository.
 ```bash
