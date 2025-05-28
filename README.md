@@ -15,6 +15,8 @@ Make sure you have the following software and tools installed:
 1. clone this repository.
 2. instal the packages from "conda_requirements.txt"
 
+### Train and validate
+
 ### API
 
 ### streamlit
