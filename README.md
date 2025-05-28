@@ -14,7 +14,7 @@ Make sure you have the following software and tools installed:
 ### general
 1. clone this repository.
 2. get the training and validation data
-    * used data
+    * Data used to train our model
         1. download from google drive. [drive](https://drive.google.com/drive/folders/1k_WsVOjaULgb3N2JebxjTVqJjVsw85dP)
     * original data
         1. download from original data. [website](https://diode-dataset.org/)
