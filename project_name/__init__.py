@@ -1,1 +1,1 @@
-"make the function callable like modules"
+"""make the function callable like modules"""
