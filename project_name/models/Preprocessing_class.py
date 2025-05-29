@@ -85,7 +85,22 @@ class Preprocessing:
         else:
             raise ValueError("Invalid tensor shape for numpy conversion")
 
-    def tile_with_padding(self, np_arrays, pad_mode='constant'):
+    def tile_with_padding(self,
+                          np_arrays: list[np.ndarray],
+                          pad_mode: str = 'constant'):
+        """Split input array into tiles and pad if part is smaller than
+        the tile
+
+        Args:
+            np_arrays (list[np.ndarray]): ndarray of image
+            pad_mode (str, optional): mode of padding. Defaults to 'constant'.
+
+        Raises:
+            TypeError: if given type is not a ndarray
+
+        Returns:
+            _type_: array of tiles
+        """
         if not isinstance(np_arrays, (list, tuple)):
             np_arrays = [np_arrays]
 
@@ -130,7 +145,7 @@ class Preprocessing:
         return np.array(all_tiles)
 
     def reconstruct_depth(self, depth_tiles: np.ndarray,
-                          original_idx=0) -> np.ndarray:
+                          original_idx: int = 0) -> np.ndarray:
         """
         Special reconstruction for 1-channel depth outputs
         """
@@ -164,8 +179,10 @@ class Preprocessing:
         # Crop to original dimensions
         return reconstructed[:h, :w]
 
-    def depth_to_rgb(self, depth_map: np.ndarray,
-                     cmap='plasma', invert=False) -> np.ndarray:
+    def depth_to_rgb(self,
+                     depth_map: np.ndarray,
+                     cmap: str = 'plasma',
+                     invert: bool = False) -> np.ndarray:
         """
         Depth map to RGB.
         """
