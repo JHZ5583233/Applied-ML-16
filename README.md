@@ -43,7 +43,7 @@ python main.py evaluate (model file name with extension) --batch-size (batch siz
 ### API
 1. Run the following command in the root directory of the repository.
 ```bash
-uvicorn FastAPI:app --reload"
+uvicorn FastAPI:app --reload
 ```
 2. In a new tab in the terminal, run the following, replacing image_path.jpg with the path and file name for the input image:
 ```
