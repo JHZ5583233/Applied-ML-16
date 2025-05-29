@@ -32,7 +32,7 @@ Both the commands below should be ran in the root folder of the repository
 
 * #### Train
 ```bash
-python main.py --epochs (amount epoch) --batch-size (batch size) --lr (learning rate) --freeze (amount before freeze)
+python main.py --epochs (amount epoch) --batch-size (batch size) --lr (learning rate) --freeze (amount before freeze) cnn
 ```
 
 * #### Validate
