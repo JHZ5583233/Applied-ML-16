@@ -2,8 +2,6 @@ import time
 import numpy as np
 import torch  # type: ignore
 import torch.nn.functional as F  # type: ignore
-import matplotlib.pyplot as plt
-from sklearn.metrics import mean_absolute_error, mean_squared_error
 import os
 from PIL import Image
 import cv2  # type: ignore
@@ -50,8 +48,8 @@ def evaluate_zoedepth_model(model, dataloader, device):
     model.eval()
     model.to(device)
 
-    maes = []
-    rmses = []
+    maes, rmses, mses, absrels = [], [], [], []
+    delta1s, delta2s, delta3s = [], [], []
     times = []
 
     with torch.no_grad():
@@ -71,38 +69,44 @@ def evaluate_zoedepth_model(model, dataloader, device):
                 preds = preds[0]
 
             if preds.shape[-2:] != depths_gt.shape[-2:]:
-                target_size = depths_gt.shape[-2:]
-                preds = F.interpolate(
-                    preds,
-                    size=target_size,
-                    mode="bilinear",
-                    align_corners=False
-                )
+                i, s = F.interpolate, depths_gt.shape[-2:]
+                preds = i(preds, s, "bilinear", False)
 
             preds_np = preds.cpu().numpy().reshape(-1)
             gt_np = depths_gt.cpu().numpy().reshape(-1)
 
-            mae = mean_absolute_error(gt_np, preds_np)
-            rmse = np.sqrt(mean_squared_error(gt_np, preds_np))
+            valid_mask = (gt_np > 0) & (preds_np > 0)
+            gt_np = gt_np[valid_mask]
+            preds_np = preds_np[valid_mask]
+
+            mae = np.mean(np.abs(gt_np - preds_np))
+            mse = np.mean((gt_np - preds_np) ** 2)
+            rmse = np.sqrt(mse)
+            absrel = np.mean(np.abs(gt_np - preds_np) / gt_np)
+
+            thresh = np.maximum(gt_np / preds_np, preds_np / gt_np)
+            delta1 = np.mean(thresh < 1.25)
+            delta2 = np.mean(thresh < 1.25 ** 2)
+            delta3 = np.mean(thresh < 1.25 ** 3)
+
             maes.append(mae)
+            mses.append(mse)
             rmses.append(rmse)
+            absrels.append(absrel)
+            delta1s.append(delta1)
+            delta2s.append(delta2)
+            delta3s.append(delta3)
 
             img, pred = images[0].cpu(), preds[0].cpu()
             save_prediction_images(img, pred, index=i, save_dir='save_dir')
 
-            if i < 0:
-                fig, axs = plt.subplots(1, 2, figsize=(12, 6))
-
-                axs[0].imshow(images.squeeze().cpu().permute(1, 2, 0))
-                axs[0].set_title("Input Image")
-                axs[0].axis('off')
-
-                pred_np_img = preds.squeeze().cpu().numpy()
-                axs[1].imshow(normalize(pred_np_img), cmap='inferno')
-                axs[1].set_title("Predicted Depth (Normalized)")
-                axs[1].axis('off')
-
-                plt.tight_layout()
-                plt.show()
-
-    return np.mean(rmses), np.mean(maes), np.mean(times)
+    return {
+        "MAE": np.mean(maes),
+        "MSE": np.mean(mses),
+        "RMSE": np.mean(rmses),
+        "AbsRel": np.mean(absrels),
+        "Delta1": np.mean(delta1s),
+        "Delta2": np.mean(delta2s),
+        "Delta3": np.mean(delta3s),
+        "Inference Time (s)": np.mean(times),
+    }

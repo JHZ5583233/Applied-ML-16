@@ -37,9 +37,16 @@ class LinearRegressionPipeline:
 
     def evaluate_model(self) -> None:
         print("Evaluating model...")
-        rmse, mae, inference_time = self.model_handler.evaluate(
+        (
+            mse_score, rmse_score, mae_score, abs_rel,
+            delta1, delta2, delta3, inference_time
+        ) = self.model_handler.evaluate(
             self.X_test, self.y_test)
-        print(f"RMSE: {rmse:.4f}, MAE: {mae:.4f}")
+        print(f"MSE: {mse_score:.4f}")
+        print(f"RMSE: {rmse_score:.4f}")
+        print(f"MAE: {mae_score:.4f}")
+        print(f"Absolute Relative Error: {abs_rel:.4f}")
+        print(f"d1={delta1:.3f}, d2={delta2:.3f}, d3={delta3:.3f}")
         print(f"Inference Time: {inference_time:.4f} s")
 
         ts = self.tile_size
@@ -134,10 +141,10 @@ class LinearRegressionPipeline:
 def main():
     pipeline = LinearRegressionPipeline(tile_size=(64, 64))
     # To train and evaluate from scratch:
-    pipeline.run()
+    # pipeline.run()
 
     # Or to load saved model and evaluate:
-    # pipeline.load_and_evaluate_saved_model("trained_linear_model.pkl")
+    pipeline.load_and_evaluate_saved_model("trained_linear_model.pkl")
 
 
 if __name__ == "__main__":

@@ -36,14 +36,10 @@ class ZoeDepthEvaluator:
 
     def evaluate(self):
         print("Evaluating model...")
-        rmse, mae, inference_time = evaluate_zoedepth_model(
+        results = evaluate_zoedepth_model(
             self.model, self.dataloader, self.device
         )
-        return {
-            "rmse": rmse,
-            "mae": mae,
-            "avg_inference_time": inference_time
-        }
+        return results
 
 
 def main():
@@ -51,9 +47,16 @@ def main():
     results = evaluator.evaluate()
 
     print("\n--- Final Results ---")
-    print(f"RMSE: {results['rmse']:.4f}")
-    print(f"MAE:  {results['mae']:.4f}")
-    print(f"Inference Time: {results['avg_inference_time']:.4f} sec")
+    for metric in [
+        "MAE", "MSE", "RMSE", "AbsRel", "Delta1",
+        "Delta2", "Delta3", "Inference Time (s)"
+    ]:
+        value = results.get(metric)
+        try:
+            value_float = float(value)
+            print(f"{metric}: {value_float:.4f}")
+        except (ValueError, TypeError):
+            print(f"{metric}: {value}")
 
 
 if __name__ == "__main__":
