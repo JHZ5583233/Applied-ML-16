@@ -3,8 +3,7 @@ import matplotlib.pyplot as plt
 from typing import Tuple, Union, List
 from PIL import Image
 import torch
-
-
+from io import BytesIO
 
 class Preprocessing:
     """
@@ -17,14 +16,16 @@ class Preprocessing:
         self.tile_size = tile_size
         self.last_padding_info: dict[int, dict] = {}
 
-    def load_image(self, img: Union[str, Image.Image]) -> np.ndarray:
+    def load_image(self, img: Union[str, Image.Image, BytesIO]) -> np.ndarray:
         """
-        Load a PIL image or path to image and convert to numpy array (uint8).
+        Load a PIL image, a path to image, or a BytesIO stream, and convert to numpy array (uint8).
         """
         if isinstance(img, str):
             img = Image.open(img)
+        elif isinstance(img, BytesIO):
+            img = Image.open(img)
         if not isinstance(img, Image.Image):
-            raise TypeError("Input must be a PIL Image or a path to one.")
+            raise TypeError("Input must be a PIL Image, a BytesIO stream, or a path to one.")
 
         return np.array(img.convert("RGB"))
 
@@ -41,7 +42,7 @@ class Preprocessing:
             # Handle other types if necessary
             normalized = (np_array / np.iinfo(np_array.dtype).max).astype(np.float32)
 
-        # Apply ImageNet mean and std if used during training
+        # Apply ImageNet mean and std (as used during training)
         mean = np.array([0.485, 0.456, 0.406])
         std = np.array([0.229, 0.224, 0.225])
         normalized = (normalized - mean) / std
@@ -83,8 +84,6 @@ class Preprocessing:
         for idx, np_array in enumerate(np_arrays):
             if not isinstance(np_array, np.ndarray):
                 raise TypeError("Input must be numpy array")
-
-            # Remove uint8 check and conversion
             original_shape = np_array.shape
             tile_h, tile_w = self.tile_size
             h, w = original_shape[:2]
@@ -96,8 +95,6 @@ class Preprocessing:
                 'pad_w': (tile_w - (w % tile_w)) % tile_w,
                 'is_grayscale': len(original_shape) == 2
             }
-
-            # Calculate padding
             pad_h = self.last_padding_info[idx]['pad_h']
             pad_w = self.last_padding_info[idx]['pad_w']
 
@@ -108,8 +105,6 @@ class Preprocessing:
                 pad_width = ((0, pad_h), (0, pad_w))
 
             padded = np.pad(np_array, pad_width, mode=pad_mode)
-
-            # Tile the original image (uint8)
             tiles = []
             for i in range(0, padded.shape[0], tile_h):
                 for j in range(0, padded.shape[1], tile_w):
@@ -137,8 +132,6 @@ class Preprocessing:
         padded_h = h + info['pad_h']
         padded_w = w + info['pad_w']
         reconstructed = np.zeros((padded_h, padded_w), dtype=np.float32)
-
-        # Tile arrangement math
         cols = padded_w // tile_w
         rows = padded_h // tile_h
 
@@ -148,14 +141,10 @@ class Preprocessing:
                 idx = i * cols + j
                 if idx >= len(depth_tiles):
                     break
-
-                # Position in reconstructed image
                 y_start = i * tile_h
                 y_end = y_start + tile_h
                 x_start = j * tile_w
                 x_end = x_start + tile_w
-
-                # Handle edge tiles
                 tile = depth_tiles[idx]
                 actual_h = min(tile_h, padded_h - y_start)
                 actual_w = min(tile_w, padded_w - x_start)
