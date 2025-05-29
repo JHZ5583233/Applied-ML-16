@@ -87,8 +87,6 @@ def main() -> None:
 
         tiles = pre_post_process.tile_with_padding(input_image)
 
-        st.write(tiles.shape)
-
         tensor_input_image = torch.tensor(
             tiles,
             device=st.session_state["device"],
@@ -104,15 +102,16 @@ def main() -> None:
         st.session_state["depth_output"] = depth_output
 
     if "depth_output" in st.session_state:
-        max = np.max(st.session_state["depth_output"])
-        st.image(((st.session_state["depth_output"] / max) *
-                  255).astype(dtype=np.int8),
-                 clamp=True)
+        pre_post_process = st.session_state["preprocess"]
+        image_output = pre_post_process.depth_to_rgb(
+            st.session_state["depth_output"])
+
+        st.image(image_output, clamp=True)
 
         depth_image_size = st.session_state["depth_output"].shape
         st.write(f"height: {depth_image_size[0]}," +
                  f" width: {depth_image_size[1]}, " +
-                 f"channels: {depth_image_size[2]}")
+                 "channels: 1")
 
     st.divider()
     if not ('depth_output' in st.session_state):
