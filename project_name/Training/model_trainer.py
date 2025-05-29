@@ -8,12 +8,12 @@ from torch.utils.data import DataLoader, Dataset
 from PIL import Image
 from typing import Tuple
 
-from models.cnn import CNNBackbone
-from models import Preprocessing
+from ..models.cnn import CNNBackbone
+from ..models.Preprocessing_class import Preprocessing
 
 # Locate your Data folder
-BASE_DIR = Path(__file__).parent.parent.parent
-DATA_DIR = BASE_DIR / "Data"
+BASE_DIR = Path(__file__).parent.parent
+DATA_DIR = BASE_DIR / "data"
 
 
 class CNNDataset(Dataset):
