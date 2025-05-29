@@ -47,7 +47,7 @@ class Preprocessing:
         else:
             # Handle other types if necessary
             normalized = (np_array /
-                          np.iinfo(np_array.dtype).max).astype(np.float32)
+                          np.finfo(np_array.dtype).max).astype(np.float32)
 
         # Apply ImageNet mean and std (as used during training)
         mean = np.array([0.485, 0.456, 0.406])

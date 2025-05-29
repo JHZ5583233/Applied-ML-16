@@ -86,7 +86,7 @@ def get_train_data_folders() -> list[str]:
 
 def main() -> None:
     """
-    To run stand allone functions
+    To run stand alone functions
     """
     print(get_all_data_path_names("train"))
 
