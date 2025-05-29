@@ -1,9 +1,10 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from typing import Tuple, Union, List
+from typing import Tuple, Union
 from PIL import Image
 import torch
 from io import BytesIO
+
 
 class Preprocessing:
     """
@@ -18,14 +19,16 @@ class Preprocessing:
 
     def load_image(self, img: Union[str, Image.Image, BytesIO]) -> np.ndarray:
         """
-        Load a PIL image, a path to image, or a BytesIO stream, and convert to numpy array (uint8).
+        Load a PIL image, a path to image, or a BytesIO stream, and
+        convert to numpy array (uint8).
         """
         if isinstance(img, str):
             img = Image.open(img)
         elif isinstance(img, BytesIO):
             img = Image.open(img)
         if not isinstance(img, Image.Image):
-            raise TypeError("Input must be a PIL Image, a BytesIO stream, or a path to one.")
+            raise TypeError("Input must be a PIL Image, "
+                            "a BytesIO stream, or a path to one.")
 
         return np.array(img.convert("RGB"))
 
@@ -43,7 +46,8 @@ class Preprocessing:
             normalized = np_array.astype(np.float32) / 255.0
         else:
             # Handle other types if necessary
-            normalized = (np_array / np.iinfo(np_array.dtype).max).astype(np.float32)
+            normalized = (np_array /
+                          np.iinfo(np_array.dtype).max).astype(np.float32)
 
         # Apply ImageNet mean and std (as used during training)
         mean = np.array([0.485, 0.456, 0.406])
@@ -53,7 +57,8 @@ class Preprocessing:
 
     def to_tensor(self, np_image: np.ndarray) -> torch.Tensor:
         """
-        Convert a numpy image (H, W, C) or (H, W) to a PyTorch tensor (C, H, W) or (1, H, W).
+        Convert a numpy image (H, W, C) or (H, W) to a
+        PyTorch tensor (C, H, W) or (1, H, W).
         Normalizes to float32.
         """
         norm = self.normalize(np_image)
@@ -67,7 +72,8 @@ class Preprocessing:
 
     def to_numpy(self, tensor: torch.Tensor) -> np.ndarray:
         """
-        Convert a PyTorch tensor (C, H, W) or (1, H, W) to a numpy array (H, W, C) or (H, W).
+        Convert a PyTorch tensor (C, H, W) or
+        (1, H, W) to a numpy array (H, W, C) or (H, W).
         Assumes tensor is already on CPU and detached.
         """
         if tensor.ndim == 3:
@@ -123,7 +129,8 @@ class Preprocessing:
 
         return np.array(all_tiles)
 
-    def reconstruct_depth(self, depth_tiles: np.ndarray, original_idx=0) -> np.ndarray:
+    def reconstruct_depth(self, depth_tiles: np.ndarray,
+                          original_idx=0) -> np.ndarray:
         """
         Special reconstruction for 1-channel depth outputs
         """
@@ -151,13 +158,14 @@ class Preprocessing:
                 tile = depth_tiles[idx]
                 actual_h = min(tile_h, padded_h - y_start)
                 actual_w = min(tile_w, padded_w - x_start)
-
-                reconstructed[y_start:y_end, x_start:x_end] = tile[:actual_h, :actual_w]
+                reconstructed[y_start:y_end, x_start:x_end] =\
+                    tile[:actual_h, :actual_w]
 
         # Crop to original dimensions
         return reconstructed[:h, :w]
 
-    def depth_to_rgb(self, depth_map: np.ndarray, cmap='plasma', invert=False) -> np.ndarray:
+    def depth_to_rgb(self, depth_map: np.ndarray,
+                     cmap='plasma', invert=False) -> np.ndarray:
         """
         Depth map to RGB.
         """

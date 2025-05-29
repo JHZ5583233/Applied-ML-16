@@ -6,7 +6,9 @@ import torch
 from project_name.models.cnn import CNNBackbone
 from project_name.models.Preprocessing_class import Preprocessing
 
-app = FastAPI(title="Depth Prediction API", description="Uploads an image and returns a predicted depth map.")
+app = FastAPI(title="Depth Prediction API",
+              description="Uploads an image and "
+                          "returns a predicted depth map.")
 
 # Setup
 MODEL_PATH = "cnn_best.pth"
@@ -15,7 +17,9 @@ model.load_state_dict(torch.load(MODEL_PATH, map_location="cpu"))
 model.eval()
 preprocessor = Preprocessing(tile_size=(256, 256))
 
-def process_image(file_bytes: bytes, model: torch.nn.Module, preprocessor: Preprocessing):
+
+def process_image(file_bytes: bytes,
+                  model: torch.nn.Module, preprocessor: Preprocessing):
     img_array = preprocessor.load_image(io.BytesIO(file_bytes))
     tiles = preprocessor.tile_with_padding(img_array)
     depth_tiles = []
@@ -34,6 +38,7 @@ def process_image(file_bytes: bytes, model: torch.nn.Module, preprocessor: Prepr
     byte_io.seek(0)
     return byte_io
 
+
 @app.post("/predict_depth/", summary="Predict depth from image")
 async def predict_depth(file: UploadFile = File(...)):
     if not file.content_type.startswith("image/"):
@@ -44,6 +49,7 @@ async def predict_depth(file: UploadFile = File(...)):
         return StreamingResponse(image_bytes, media_type="image/png")
     except Exception as e:
         raise HTTPException(status_code=500, detail="Error processing image.")
+
 
 @app.get("/", summary="Health check")
 def read_root():
