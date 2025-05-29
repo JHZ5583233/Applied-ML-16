@@ -85,34 +85,33 @@ def main() -> None:
         input_image = st.session_state["rgb_image"]
         pre_post_process = st.session_state["preprocess"]
 
-        input_image = pre_post_process.tile_with_padding(input_image)
+        tiles = pre_post_process.tile_with_padding(input_image)
 
-        tensor_input_image = torch.tensor(input_image,
-                                          device=st.session_state["device"],
-                                          dtype=torch.float).permute(0,
-                                                                     3,
-                                                                     1,
-                                                                     2)
+        tensor_input_image = torch.tensor(
+            tiles,
+            device=st.session_state["device"],
+            dtype=torch.float).permute(0, 3, 1, 2)
 
-        output_model = model(tensor_input_image)
-        output_numpy = output_model.detach().numpy()
+        with torch.no_grad():
+            tiles_output = model(tensor_input_image)
 
-        st.write(output_numpy.shape)
-        # TODO remake shape
-        st.write(pre_post_process.reconstruct_image(output_numpy))
+        depth_output = pre_post_process.reconstruct_depth(
+            tiles_output.squeeze().cpu().numpy()
+            )
 
-        st.session_state["depth_output"] = output_numpy
+        st.session_state["depth_output"] = depth_output
 
     if "depth_output" in st.session_state:
-        max = np.max(st.session_state["depth_output"])
-        st.image(((st.session_state["depth_output"] / max) *
-                  255).astype(dtype=np.int8),
-                 clamp=True)
+        pre_post_process = st.session_state["preprocess"]
+        image_output = pre_post_process.depth_to_rgb(
+            st.session_state["depth_output"])
+
+        st.image(image_output, clamp=True)
 
         depth_image_size = st.session_state["depth_output"].shape
         st.write(f"height: {depth_image_size[0]}," +
                  f" width: {depth_image_size[1]}, " +
-                 f"channels: {depth_image_size[2]}")
+                 "channels: 1")
 
     st.divider()
     if not ('depth_output' in st.session_state):
