@@ -8,8 +8,8 @@ project_dir = Path(__file__).parent.resolve()
 sys.path.insert(0, str(project_dir))
 
 
-def main() -> None:
-    """function to run the training and validation of the model
+def main():
+    """Main function to run or validate model.
     """
     parser = argparse.ArgumentParser("Depth Estimation Pipeline")
     subs = parser.add_subparsers(dest="cmd", required=True)
