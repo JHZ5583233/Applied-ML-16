@@ -5,9 +5,9 @@ import numpy as np
 import torch
 from torch.utils.data import DataLoader
 
-from models.cnn import CNNBackbone
-from Training.model_trainer import CNNDataset
-from Evaluation.validation import validate_model
+from ...models.cnn import CNNBackbone
+from ...Training.model_trainer import CNNDataset
+from ..Evaluation.validation import validate_model
 
 # Add project src to path
 project_dir = Path(__file__).parent.parent
