@@ -36,6 +36,9 @@ class Preprocessing:
         return np_array.dtype == np.uint8
 
     def normalize(self, np_array: np.ndarray) -> np.ndarray:
+        """
+        Normalize a numpy array to [0, 1].
+        """
         if self.is_8_bit(np_array):
             normalized = np_array.astype(np.float32) / 255.0
         else:
@@ -155,12 +158,14 @@ class Preprocessing:
         return reconstructed[:h, :w]
 
     def depth_to_rgb(self, depth_map: np.ndarray, cmap='plasma', invert=False) -> np.ndarray:
-        """Enhanced version with dynamic scaling"""
+        """
+        Depth map to RGB.
+        """
         # Normalize based on percentiles (robust to outliers)
         p1, p99 = np.percentile(depth_map, [1, 99])
         scaled = np.clip((depth_map - p1) / (p99 - p1), 0, 1)
 
-        if invert:  # Warm=close, Cool=far
+        if invert:
             scaled = 1 - scaled
 
         cmap = plt.get_cmap(cmap)

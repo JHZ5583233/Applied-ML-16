@@ -1,61 +1,50 @@
 from fastapi import FastAPI, File, UploadFile, HTTPException
-from fastapi.responses import StreamingResponse, JSONResponse
+from fastapi.responses import StreamingResponse
 import io
 from PIL import Image
 import torch
-import numpy as np
 from project_name.models.cnn import CNNBackbone
 from project_name.models.Preprocessing_class import Preprocessing
 
-app = FastAPI()
+app = FastAPI(title="Depth Prediction API", description="Uploads an image and returns a predicted depth map.")
 
-# Load model
+# Setup
+MODEL_PATH = "cnn_best.pth"
 model = CNNBackbone(pretrained=False)
-model.load_state_dict(torch.load("cnn_best.pth", map_location="cpu"))
+model.load_state_dict(torch.load(MODEL_PATH, map_location="cpu"))
 model.eval()
-
 preprocessor = Preprocessing(tile_size=(256, 256))
 
-@app.post("/predict_depth")
-async def predict_image(file: UploadFile = File(...)):
+def process_image(file_bytes: bytes, model: torch.nn.Module, preprocessor: Preprocessing):
+    img_array = preprocessor.load_image(io.BytesIO(file_bytes))
+    tiles = preprocessor.tile_with_padding(img_array)
+    depth_tiles = []
+    for tile in tiles:
+        input_tensor = preprocessor.to_tensor(tile).unsqueeze(0)
+        with torch.no_grad():
+            output = model(input_tensor)
+        depth_tiles.append(output.squeeze().cpu().numpy())
+
+    depth_map = preprocessor.reconstruct_depth(depth_tiles)
+    depth_rgb = preprocessor.depth_to_rgb(depth_map, invert=True)
+
+    result_image = Image.fromarray(depth_rgb)
+    byte_io = io.BytesIO()
+    result_image.save(byte_io, format="PNG")
+    byte_io.seek(0)
+    return byte_io
+
+@app.post("/predict_depth/", summary="Predict depth from image")
+async def predict_depth(file: UploadFile = File(...)):
+    if not file.content_type.startswith("image/"):
+        raise HTTPException(status_code=400, detail="Invalid image format")
     try:
-        if not file.content_type.startswith("image/"):
-            raise HTTPException(status_code=400, detail="Invalid image format")
-
-        # Read image and tile
         contents = await file.read()
-        #pil_image = Image.open(io.BytesIO(contents)).convert("RGB")
-        #img_array = np.array(pil_image)
-        img_array = preprocessor.load_image(io.BytesIO(contents))
-        tiles = preprocessor.tile_with_padding(img_array)
-        depth_tiles = []
-        for tile in tiles:
-            # Convert to tensor
-            input_tensor = preprocessor.to_tensor(tile).unsqueeze(0)
-            with torch.no_grad():
-                output = model(input_tensor)
-                depth_np = output.squeeze().cpu().numpy()
-                depth_tiles.append(depth_np)
-
-        # Reconstruct depth map and convert to RGB
-        depth_map = preprocessor.reconstruct_depth(depth_tiles)
-        depth_rgb = preprocessor.depth_to_rgb(depth_map, invert=True)
-
-        # Create response
-        result_image = Image.fromarray(depth_rgb)
-        byte_io = io.BytesIO()
-        result_image.save(byte_io, format="PNG")
-        byte_io.seek(0)
-
-        return StreamingResponse(byte_io, media_type="image/png")
-
+        image_bytes = process_image(contents, model, preprocessor)
+        return StreamingResponse(image_bytes, media_type="image/png")
     except Exception as e:
-        return JSONResponse(
-            status_code=500,
-            content={"message": f"Error processing image: {str(e)}"}
-        )
+        raise HTTPException(status_code=500, detail="Error processing image.")
 
-@app.get("/")
+@app.get("/", summary="Health check")
 def read_root():
-    return {"message": "API is running. Go to /docs to try it out."}
-
+    return {"status": "healthy"}
