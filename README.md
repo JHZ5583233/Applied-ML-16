@@ -2,7 +2,7 @@
 
 Welcome to our repo for our project for Applied machine learning project.
 
-Our project is to train an model to approximate depth data from rgb images in a tilling pattern.
+Our project is to train an model to approximate depth data from RGB images in a tilling pattern.
 
 ## Prerequisites
 Make sure you have the following software and tools installed:
@@ -12,20 +12,20 @@ Make sure you have the following software and tools installed:
 
 ## Getting Started
 ### general
-1. clone this repository.
-2. get the training and validation data and place in the data folder in the project_name folder.
+1. Clone this repository.
+2. Get the training and validation data and place in the data folder in the project_name folder.
     * Data used to train our model
         1. download from google drive. [drive](https://drive.google.com/drive/folders/1k_WsVOjaULgb3N2JebxjTVqJjVsw85dP)
     * original data
         1. download from original data. [website](https://diode-dataset.org/)
         2. run subset_maker.py with amount sample and "val or "train" to get workable data folder.
-3. create conda environment with python 3.11
-4. instal the packages from "conda_requirements.txt" using the command under.
+3. Create conda environment with python 3.11
+4. Install the packages from "conda_requirements.txt" using the command under.
 ```bash
 conda install --yes --file conda_requirements.txt"
 ```
-5. install pytorch using the command from their [website](https://pytorch.org/).
-6. download the model from the release page and place it in the root folder of the repository
+5. Install pytorch using the command from their [website](https://pytorch.org/).
+6. Download the model from the release page and place it in the root folder of the repository
 
 ### Train and validate
 Both the commands below should be ran in the root folder of the repository
@@ -41,17 +41,26 @@ python main.py evaluate (model file name with extension) --batch-size (batch siz
 ```
 
 ### API
-1. run the following command in the root directory of the repository.
+1. Run the following command in the root directory of the repository.
 ```bash
 uvicorn FastAPI:app --reload"
 ```
+2. In a new tab in the terminal, run the following, replacing image_path.jpg with the path and file name for the input image:
+```
+curl -X 'POST' \
+  'http://127.0.0.1:8000/predict_depth/' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: multipart/form-data' \
+  -F 'file=@image_path.jpg;type=image/jpeg'
+-- output output.png
+```
 
 ### Streamlit
-1. run the following command in the root directory of the repository.
+1. Run the following command in the root directory of the repository.
 ```bash
 streamlit run streamlit_main.py" when in the main folder of repository.
 ```
-2. follow instruction on the web demo.
+2. Follow instruction on the web demo.
 
 ### Unit testing
 
