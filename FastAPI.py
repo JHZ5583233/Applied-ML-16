@@ -47,7 +47,7 @@ async def predict_depth(file: UploadFile = File(...)):
         contents = await file.read()
         image_bytes = process_image(contents, model, preprocessor)
         return StreamingResponse(image_bytes, media_type="image/png")
-    except Exception as e:
+    except Exception:
         raise HTTPException(status_code=500, detail="Error processing image.")
 
 
