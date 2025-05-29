@@ -96,8 +96,7 @@ def main() -> None:
             tiles_output = model(tensor_input_image)
 
         depth_output = pre_post_process.reconstruct_depth(
-            tiles_output.squeeze().cpu().numpy()
-            )
+            tiles_output.squeeze().cpu().numpy())
 
         st.session_state["depth_output"] = depth_output
 
