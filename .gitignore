@@ -16,4 +16,4 @@ project_name/data/val_subset/
 /zoedepth/
 project_name/data/train_subset.7z
 project_name/data/val_subset.7z
-project_name\trained_linear_model.pkl
+project_name/trained_linear_model.pkl
