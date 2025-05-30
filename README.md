@@ -22,7 +22,7 @@ Make sure you have the following software and tools installed:
 3. Create conda environment with python 3.11
 4. Install the packages from "conda_requirements.txt" using the command under.
 ```bash
-conda install --yes --file conda_requirements.txt"
+conda install --yes --file conda_requirements.txt
 ```
 5. Install pytorch using the command from their [website](https://pytorch.org/).
 6. Download the model from the release page and place it in the root folder of the repository
