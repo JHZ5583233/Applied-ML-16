@@ -6,8 +6,17 @@ import os
 from PIL import Image
 import cv2  # type: ignore
 
+from typing import type_check_only
 
-def save_prediction_images(img_tensor, pred_tensor, index, save_dir="pred"):
+if type_check_only:
+    from torch.utils.data import Dataset
+    import torch.nn as nn
+
+
+def save_prediction_images(img_tensor: torch.Tensor,
+                           pred_tensor: torch.Tensor,
+                           index: int,
+                           save_dir: str = "pred"):
 
     os.makedirs(save_dir, exist_ok=True)
 
@@ -32,7 +41,7 @@ def save_prediction_images(img_tensor, pred_tensor, index, save_dir="pred"):
     combined_img_pil.save(os.path.join(save_dir, f"combined_{index}.png"))
 
 
-def normalize(img):
+def normalize(img: torch.Tensor) -> torch.Tensor:
     """Normalize array for visualization."""
     if isinstance(img, torch.Tensor):
         img_min = img.min()
@@ -44,7 +53,19 @@ def normalize(img):
         return (img - img_min) / (img_max - img_min + 1e-8)
 
 
-def evaluate_zoedepth_model(model, dataloader, device):
+def evaluate_zoedepth_model(model: nn.module,
+                            dataloader: Dataset,
+                            device: torch.device) -> dict:
+    """Evaluate model
+
+    Args:
+        model (model): the model to be evaluated
+        dataloader (dataloader with data):data loader with the data to use
+        device (torch.device): device to run the model on
+
+    Returns:
+        dict: the eval results
+    """
     model.eval()
     model.to(device)
 
