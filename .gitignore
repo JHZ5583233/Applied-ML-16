@@ -4,6 +4,7 @@
 .vscode/
 Pipfile.lock
 __pycache__/
+.DS_Store
 venv/
 project_name/data/full_data/
 project_name/data/subset_data/
@@ -15,3 +16,5 @@ project_name/data/val_subset/
 project_name/data/train_subset.7z
 project_name/data/val_subset.7z
 cnn_best.pth
+project_name/trained_linear_model.pkl
+/zoedepth/
