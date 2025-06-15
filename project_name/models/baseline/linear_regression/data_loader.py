@@ -7,7 +7,9 @@ from data.data_loader import DataLoader
 class LinearRegressionDataset:
     """Dataset loader for Linear Regression training & testing data."""
 
-    def __init__(self, split: str, tile_size: Tuple[int, int] = (64, 64)):
+    def __init__(self,
+                 split: str,
+                 tile_size: Tuple[int, int] = (64, 64)) -> None:
         """
         Args:
             split (str): "train" or "val"
