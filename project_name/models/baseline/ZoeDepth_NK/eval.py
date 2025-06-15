@@ -16,7 +16,8 @@ if type_check_only:
 def save_prediction_images(img_tensor: torch.Tensor,
                            pred_tensor: torch.Tensor,
                            index: int,
-                           save_dir: str = "pred"):
+                           save_dir: str = "pred") -> None:
+    """Save the prediction"""
 
     os.makedirs(save_dir, exist_ok=True)
 
@@ -33,7 +34,7 @@ def save_prediction_images(img_tensor: torch.Tensor,
     if input_np.shape[2] == 1:
         input_np = np.repeat(input_np, 3, axis=2)
 
-    pred_img_3ch = np.stack([pred_np_resized]*3, axis=2)
+    pred_img_3ch = np.stack([pred_np_resized] * 3, axis=2)
 
     combined_img = np.concatenate((input_np, pred_img_3ch), axis=1)
 
