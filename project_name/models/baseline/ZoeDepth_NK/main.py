@@ -66,7 +66,7 @@ class ZoeDepthEvaluator:
         return results
 
 
-def main() -> Non:
+def main() -> None:
     """run and eval the model
     """
     evaluator = ZoeDepthEvaluator(split="val", batch_size=1, num_workers=4)

@@ -11,7 +11,7 @@ class LinearRegressionPipeline:
     and evaluation of a linear regression model.
     """
 
-    def __init__(self, tile_size=(64, 64)) -> None:
+    def __init__(self, tile_size: tuple[int, int] = (64, 64)) -> None:
         """init pipeline
 
         Args:
@@ -80,8 +80,9 @@ class LinearRegressionPipeline:
         self.evaluate_model()
 
     def visualize_images_and_depths(self,
-                                    num_samples=5,
-                                    tile_size=(64, 64)) -> None:
+                                    num_samples: int = 5,
+                                    tile_size: tuple[int, int] = (64, 64)
+                                    ) -> None:
         """predict and visualize output
 
         Args:
