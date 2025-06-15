@@ -22,7 +22,7 @@ class ZoeDepthDataset(Dataset):
         """get amount samples"""
         return self.total_samples
 
-    def __getitem__(self, idx) -> Tuple[torch.Tensor, torch.Tensor]:
+    def __getitem__(self, idx: int) -> Tuple[torch.Tensor, torch.Tensor]:
         """Get Item magic method"""
         self.loader.data_index = idx
         image_np, depth_np = self.loader.get_data()
