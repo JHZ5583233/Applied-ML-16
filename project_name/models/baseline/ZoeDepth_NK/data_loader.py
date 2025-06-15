@@ -6,16 +6,24 @@ from data.data_loader import DataLoader as OriginalDataLoader
 
 
 class ZoeDepthDataset(Dataset):
+    """Zoedepth dataloader
+
+    Args:
+        Dataset (Dataset): Base dataset object
+    """
     def __init__(self, split: str):
+        """Init dataset"""
         if split.lower() not in {"train", "val"}:
             raise ValueError("Split must be 'train' or 'val'")
         self.loader = OriginalDataLoader(split.lower())
         self.total_samples = len(self.loader.data_paths)
 
     def __len__(self):
+        """get amount samples"""
         return self.total_samples
 
     def __getitem__(self, idx) -> Tuple[torch.Tensor, torch.Tensor]:
+        """Get Item magic method"""
         self.loader.data_index = idx
         image_np, depth_np = self.loader.get_data()
 

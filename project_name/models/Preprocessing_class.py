@@ -87,7 +87,7 @@ class Preprocessing:
 
     def tile_with_padding(self,
                           np_arrays: list[np.ndarray],
-                          pad_mode: str = 'constant'):
+                          pad_mode: str = 'constant') -> np.ndarray:
         """Split input array into tiles and pad if part is smaller than
         the tile
 
