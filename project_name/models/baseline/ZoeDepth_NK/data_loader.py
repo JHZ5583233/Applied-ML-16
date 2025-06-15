@@ -11,14 +11,14 @@ class ZoeDepthDataset(Dataset):
     Args:
         Dataset (Dataset): Base dataset object
     """
-    def __init__(self, split: str):
+    def __init__(self, split: str) -> None:
         """Init dataset"""
         if split.lower() not in {"train", "val"}:
             raise ValueError("Split must be 'train' or 'val'")
         self.loader = OriginalDataLoader(split.lower())
         self.total_samples = len(self.loader.data_paths)
 
-    def __len__(self):
+    def __len__(self) -> int:
         """get amount samples"""
         return self.total_samples
 
