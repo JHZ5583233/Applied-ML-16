@@ -11,7 +11,12 @@ class LinearRegressionPipeline:
     and evaluation of a linear regression model.
     """
 
-    def __init__(self, tile_size=(64, 64)):
+    def __init__(self, tile_size=(64, 64)) -> None:
+        """init pipeline
+
+        Args:
+            tile_size (tuple, optional): tile size. Defaults to (64, 64).
+        """
         self.model_handler = LinearModelHandler()
         self.X_train: np.ndarray = None
         self.y_train: np.ndarray = None
@@ -20,6 +25,8 @@ class LinearRegressionPipeline:
         self.tile_size = tile_size
 
     def load_data(self) -> None:
+        """load data
+        """
         print("Loading training data...")
         ts = self.tile_size
         train_dataset = LinearRegressionDataset("train", tile_size=ts)
@@ -31,11 +38,15 @@ class LinearRegressionPipeline:
         self.X_test, self.y_test = test_dataset.get_all()
 
     def train_model(self) -> None:
+        """train model
+        """
         print("Training model...")
         self.model_handler.train(self.X_train, self.y_train)
         self.model_handler.save_model("trained_linear_model.pkl")
 
     def evaluate_model(self) -> None:
+        """eval model
+        """
         print("Evaluating model...")
         (
             mse_score, rmse_score, mae_score, abs_rel,
@@ -53,6 +64,8 @@ class LinearRegressionPipeline:
         self.visualize_images_and_depths(num_samples=5, tile_size=ts)
 
     def run(self) -> None:
+        """run pipeline
+        """
         self.load_data()
         self.train_model()
         self.evaluate_model()
@@ -66,7 +79,15 @@ class LinearRegressionPipeline:
         self.model_handler.load_model(model_path)
         self.evaluate_model()
 
-    def visualize_images_and_depths(self, num_samples=5, tile_size=(64, 64)):
+    def visualize_images_and_depths(self,
+                                    num_samples=5,
+                                    tile_size=(64, 64)) -> None:
+        """predict and visualize output
+
+        Args:
+            num_samples (int, optional): amount samples. Defaults to 5.
+            tile_size (tuple, optional): tile size. Defaults to (64, 64).
+        """
         if self.model_handler.model is None:
             raise ValueError("Model not trained or loaded.")
         if self.X_test is None or self.y_test is None:
@@ -138,7 +159,9 @@ class LinearRegressionPipeline:
             plt.show()
 
 
-def main():
+def main() -> None:
+    """main function to run
+    """
     pipeline = LinearRegressionPipeline(tile_size=(64, 64))
     # To train and evaluate from scratch:
     # pipeline.run()
