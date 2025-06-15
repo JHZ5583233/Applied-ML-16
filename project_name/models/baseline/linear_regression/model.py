@@ -7,14 +7,31 @@ import joblib
 
 
 class LinearModelHandler:
-    def __init__(self):
+    """model handeler for linear regression"""
+    def __init__(self) -> None:
+        """Init handler
+        """
         self.model: LinearRegression = None
 
     def train(self, X_train: np.ndarray, y_train: np.ndarray) -> None:
+        """train model
+
+        Args:
+            X_train (np.ndarray): input
+            y_train (np.ndarray): ground truth
+        """
         self.model = LinearRegression()
         self.model.fit(X_train, y_train)
 
     def predict(self, X_test: np.ndarray) -> np.ndarray:
+        """predict
+
+        Args:
+            X_test (np.ndarray): observation
+
+        Returns:
+            np.ndarray: prediction
+        """
         if self.model is None:
             raise ValueError("Model has not been trained yet.")
         return self.model.predict(X_test)
@@ -24,6 +41,16 @@ class LinearModelHandler:
         X_test: np.ndarray,
         y_test: np.ndarray
     ) -> Tuple[float, float, float, float, float, float, float, float]:
+        """eval model
+
+        Args:
+            X_test (np.ndarray): observation
+            y_test (np.ndarray): ground truth
+
+        Returns:
+            Tuple[float, float, float, float, float, float, float, float]:
+            results
+        """
         if self.model is None:
             raise ValueError("Model has not been trained yet.")
 
@@ -55,11 +82,23 @@ class LinearModelHandler:
                 )
 
     def save_model(self, path: str = "trained_linear_model.pkl") -> None:
+        """save model
+
+        Args:
+            path (str, optional): path to save.
+            Defaults to "trained_linear_model.pkl".
+        """
         if self.model is None:
             raise ValueError("Model has not been trained yet.")
         joblib.dump(self.model, path)
         print(f"Model saved to {path}")
 
     def load_model(self, path: str = "trained_linear_model.pkl") -> None:
+        """load model
+
+        Args:
+            path (str, optional): path to load model.
+            Defaults to "trained_linear_model.pkl".
+        """
         self.model = joblib.load(path)
         print(f"Model loaded from {path}")
